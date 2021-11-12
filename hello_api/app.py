@@ -1,11 +1,16 @@
-from flask import Flask
+from flask import Flask, request, jsonify
+from models import recipes
 
 app = Flask(__name__)
 
 
-@app.route('/')
-def home():
-    return "Welcome to First API"
+@app.route('/recipes', methods=['GET'])
+def get_all_recipes():
+    """
+    This method will return all the recipes
+    :return: Json data with all the recipes
+    """
+    return jsonify(data=recipes)
 
 
 if __name__ == '__main__':
