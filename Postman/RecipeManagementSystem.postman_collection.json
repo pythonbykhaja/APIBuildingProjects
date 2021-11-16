@@ -83,6 +83,60 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Update Existing Recipe",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Vegatable Biryani\",\r\n    \"description\": \"This is best Vegatable Biryani\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/recipes/1",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"recipes",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Non Existing Recipe",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Nothing\",\r\n    \"description\": \"Just for test\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/recipes/99999",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"recipes",
+						"99999"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [

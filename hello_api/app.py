@@ -50,5 +50,27 @@ def create_recipe():
     return jsonify(recipe), HTTPStatus.CREATED
 
 
+@app.route('/recipes/<int:recipe_id>', methods=['PUT'])
+def update_recipe(recipe_id):
+    """
+    This method will update the recipe if found
+    :param recipe_id: id of the recipe
+    :return: Success when recipe is found, NOT_FOUND when id is wrong
+    """
+    recipe_found = next((recipe for recipe in recipes if recipe['id'] == recipe_id), None)
+
+    if not recipe_found:
+        return jsonify(message='recipe not found'), HTTPStatus.NOT_FOUND
+
+    data = request.get_json()
+    recipe_found.update(
+        {
+            'name': data.get('name'),
+            'description': data.get('description')
+        }
+    )
+    return jsonify(recipe_found)
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8081, debug=True)
