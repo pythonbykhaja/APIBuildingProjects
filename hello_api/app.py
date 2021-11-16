@@ -1,3 +1,5 @@
+from cmath import rect
+
 from flask import Flask, request, jsonify
 from models import recipes
 from http import HTTPStatus
@@ -14,7 +16,7 @@ def get_all_recipes():
     return jsonify(data=recipes)
 
 
-@app.route('/recipes/<int:recipe_id>')
+@app.route('/recipes/<int:recipe_id>', methods=['GET'])
 def get_recipe(recipe_id):
     """
     This method will return the recipe if the id is found
@@ -26,6 +28,26 @@ def get_recipe(recipe_id):
     if recipe_found:
         return jsonify(recipe_found)
     return jsonify(message='recipe not found'), HTTPStatus.NOT_FOUND
+
+
+@app.route('/recipes', methods=['POST'])
+def create_recipe():
+    """
+    This method will create the recipe
+    :return: Created Status
+    """
+    data = request.get_json()
+    name = data.get('name')
+    description = data.get('description')
+
+    recipe = {
+        'id': len(recipes) + 1,
+        'name': name,
+        'description': description
+    }
+
+    recipes.append(recipe)
+    return jsonify(recipe), HTTPStatus.CREATED
 
 
 if __name__ == '__main__':

@@ -57,6 +57,32 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Create a recipe",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Pulav\",\r\n    \"description\": \"This is the best Pulav\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/recipes",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"recipes"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [
