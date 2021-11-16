@@ -11,12 +11,10 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8081/recipes",
-					"protocol": "http",
+					"raw": "{{base_url}}/recipes",
 					"host": [
-						"localhost"
+						"{{base_url}}"
 					],
-					"port": "8081",
 					"path": [
 						"recipes"
 					]
@@ -30,12 +28,10 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8081/recipes/1",
-					"protocol": "http",
+					"raw": "{{base_url}}/recipes/1",
 					"host": [
-						"localhost"
+						"{{base_url}}"
 					],
-					"port": "8081",
 					"path": [
 						"recipes",
 						"1"
@@ -50,12 +46,10 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8081/recipes/99999",
-					"protocol": "http",
+					"raw": "{{base_url}}/recipes/99999",
 					"host": [
-						"localhost"
+						"{{base_url}}"
 					],
-					"port": "8081",
 					"path": [
 						"recipes",
 						"99999"
@@ -63,6 +57,32 @@
 				}
 			},
 			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8081"
 		}
 	]
 }
