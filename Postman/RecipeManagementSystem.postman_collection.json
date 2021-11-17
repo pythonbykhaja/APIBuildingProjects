@@ -141,18 +141,36 @@
 		{
 			"name": "Delete Existing Recipe",
 			"request": {
-				"method": "GET",
+				"method": "DELETE",
 				"header": [],
-				"url": null
+				"url": {
+					"raw": "{{base_url}}/recipes/1",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"recipes",
+						"1"
+					]
+				}
 			},
 			"response": []
 		},
 		{
 			"name": "Delete Non Existing Recipe",
 			"request": {
-				"method": "GET",
+				"method": "DELETE",
 				"header": [],
-				"url": null
+				"url": {
+					"raw": "{{base_url}}/recipes/99999",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"recipes",
+						"99999"
+					]
+				}
 			},
 			"response": []
 		}
