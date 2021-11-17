@@ -137,6 +137,24 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Delete Existing Recipe",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": null
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Non Existing Recipe",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": null
+			},
+			"response": []
 		}
 	],
 	"event": [
