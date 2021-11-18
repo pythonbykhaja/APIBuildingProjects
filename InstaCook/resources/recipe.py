@@ -12,13 +12,24 @@ class RecipeListResource(Resource):
     def get(self):
         """
         This method will indicate the get verb
-        :return:
+        :return: all the recipes
         """
-        pass
+        data = []
+        for recipe in recipe_list:
+            if recipe.is_publish is True:
+                data.append(recipe.data)
+        return {'data': data}, HTTPStatus.OK
 
     def post(self):
         """
         This method will indicate the post verb
         :return:
         """
-        pass
+        data = request.get_json()
+        recipe = Recipe(name=data['name'],
+                        description=data['description'],
+                        num_of_servings=data['num_of_servings'],
+                        cook_time=data['cook_time'],
+                        directions=data['directions'])
+        recipe_list.append(recipe)
+        return recipe.data, HTTPStatus.CREATED
