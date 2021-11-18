@@ -48,3 +48,4 @@ class Recipe:
             'cook_time': self.cook_time,
             'directions': self.directions,
         }
+

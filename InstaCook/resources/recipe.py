@@ -80,3 +80,35 @@ class RecipeResource(Resource):
         """
         recipe = next((recipe for recipe in recipe_list if recipe.id == recipe_id), None)
         return recipe
+
+
+class RecipePublishResource(Resource):
+    """
+    This class represents a Rest Resource to Publish and UnPublish Recipes
+    """
+    def put(self, recipe_id):
+        """
+        This method is used to publish the Recipe
+        :param recipe_id: id of the recipe
+        :return: SUCCESS if recipe is found and NOT_FOUND status otherwise
+        """
+        recipe = RecipeResource.find_recipe(recipe_id)
+
+        if recipe is None:
+            return {'message': 'recipe not found'}, HTTPStatus.NOT_FOUND
+
+        recipe.is_publish = True
+        return {}, HTTPStatus.NO_CONTENT
+
+    def delete(self, recipe_id):
+        """
+        This method will un publish the Recipe
+        :param recipe_id: id of the Recipe
+        :return: SUCCESS when recipe is unpublished and NOT_FOUND if the recipe is not found
+        """
+        recipe = RecipeResource.find_recipe(recipe_id)
+        if recipe is None:
+            return {'message': 'recipe not found'}, HTTPStatus.NOT_FOUND
+
+        recipe.is_publish = False
+        return {}, HTTPStatus.NO_CONTENT
