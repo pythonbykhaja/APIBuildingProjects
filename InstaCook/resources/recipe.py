@@ -71,6 +71,19 @@ class RecipeResource(Resource):
         recipe.description = data['description']
         return recipe.data, HTTPStatus.OK
 
+    def delete(self, recipe_id):
+        """
+        Delete implementation of the Recipe
+
+        :param recipe_id: id of the recipe to be deleted
+        :return: NO_CONTENT if the Recipe is deleted and NOT_FOUND if the recipe is not found
+        """
+        recipe = self.find_recipe(recipe_id)
+        if recipe is None:
+            return {'message': 'recipe not found'}, HTTPStatus.NOT_FOUND
+        recipe_list.remove(recipe)
+        return {}, HTTPStatus.NO_CONTENT
+
     @staticmethod
     def find_recipe(recipe_id) -> Recipe:
         """
@@ -86,6 +99,7 @@ class RecipePublishResource(Resource):
     """
     This class represents a Rest Resource to Publish and UnPublish Recipes
     """
+
     def put(self, recipe_id):
         """
         This method is used to publish the Recipe
