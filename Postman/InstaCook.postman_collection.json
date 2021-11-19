@@ -1,0 +1,244 @@
+{
+	"info": {
+		"_postman_id": "ee0465d7-9aa2-4c09-8c01-11755a139e0d",
+		"name": "InstaCook",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get All Recipes",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/recipes",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"recipes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create New Recipe",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Vegetable Biryani\",\r\n    \"description\": \"This is best Vegetable Biryani\",\r\n    \"num_of_servings\": 4,\r\n    \"directions\": \"follow some thing\",\r\n    \"cook_time\": 60\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/recipes",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"recipes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Publish Recipe",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/recipes/1/publish",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"recipes",
+						"1",
+						"publish"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UnPublish Recipe",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/recipes/1/publish",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"recipes",
+						"1",
+						"publish"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Specific Recipe",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/recipes/1",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"recipes",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Recipe",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Vegetable Biryani\",\r\n    \"description\": \"This is best Vegetable Biryani\",\r\n    \"num_of_servings\": 4,\r\n    \"directions\": \"This is how you make it\",\r\n    \"cook_time\": 60\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/recipes/1",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"recipes",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Non Existing Recipe",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/recipes/99999",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"recipes",
+						"99999"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Non Existing Recipe",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Vegetable Biryani\",\r\n    \"description\": \"This is best Vegetable Biryani\",\r\n    \"num_of_servings\": 4,\r\n    \"directions\": \"follow some thing\",\r\n    \"cook_time\": 60\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/recipes/99999",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"recipes",
+						"99999"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Publish Non Existing Recipe",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/recipes/99999/publish",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"recipes",
+						"99999",
+						"publish"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Un Publish Non Existing Recipe",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/recipes/99999/publish",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"recipes",
+						"99999",
+						"publish"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:5000"
+		}
+	]
+}
