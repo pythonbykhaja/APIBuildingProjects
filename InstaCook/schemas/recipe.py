@@ -24,7 +24,7 @@ class RecipeSchema(Schema):
 
     id = fields.Integer(dump_only=True)
     name = fields.String(required=True, validate=[validate.Length(max=100)])
-    description = fields.String(validate=[validate.Length(256)])
+    description = fields.String(validate=[validate.Length(max=256)])
     num_of_servings = fields.Integer(validate=validate_num_of_servings)
     cook_time = fields.Integer()
     directions = fields.String(validate=[validate.Length(max=1000)])

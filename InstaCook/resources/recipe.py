@@ -2,7 +2,10 @@ from flask import request
 from flask_restful import Resource
 from http import HTTPStatus
 from models.recipe import Recipe, recipe_list
+from schemas.recipe import RecipeSchema
+from marshmallow import ValidationError
 
+recipe_schema = RecipeSchema()
 
 class RecipeListResource(Resource):
     """
@@ -25,12 +28,12 @@ class RecipeListResource(Resource):
         This method will indicate the post verb
         :return: recipe data
         """
-        data = request.get_json()
-        recipe = Recipe(name=data['name'],
-                        description=data['description'],
-                        num_of_servings=data['num_of_servings'],
-                        cook_time=data['cook_time'],
-                        directions=data['directions'])
+        json_data = request.get_json()
+        try:
+            data = recipe_schema.load(data=json_data)
+        except ValidationError as ve:
+            return {'message': 'Validation Error', 'error': ve.messages}, HTTPStatus.BAD_REQUEST
+        recipe = Recipe(**data)
         recipe_list.append(recipe)
         return recipe.data, HTTPStatus.CREATED
 
