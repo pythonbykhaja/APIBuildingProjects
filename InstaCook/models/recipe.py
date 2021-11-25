@@ -32,3 +32,17 @@ class Recipe(db.Model):
     created_at = db.Column(db.DateTime(), nullable=False, server_default=db.func.now())
     updated_at = db.Column(db.DateTime(), nullable=False, server_default=db.func.now(), onupdate=db.func.now())
 
+    @property
+    def data(self):
+        """
+        property to return the Recipe as dictionary
+        :return: dictionary representation of current Recipe object
+        """
+        return {
+            'id': self.id,
+            'name': self.name,
+            'description': self.description,
+            'num_of_servings': self.num_of_servings,
+            'cook_time': self.cook_time,
+            'directions': self.directions,
+        }
