@@ -42,6 +42,10 @@
 					"listen": "test",
 					"script": {
 						"exec": [
+							"var json_data = pm.response.json();\r",
+							"pm.collectionVariables.set(\"recipe_id\", json_data.id);\r",
+							"console.log(json_data)\r",
+							"console.log(json_data.id)\r",
 							"pm.test(\"Status code is 201\", function () {\r",
 							"    pm.response.to.have.status(201);\r",
 							"});"
@@ -55,7 +59,95 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"Vegetable Biryani\",\r\n    \"description\": \"This is best Vegetable Biryani\",\r\n    \"num_of_servings\": 4,\r\n    \"directions\": \"follow some thing\",\r\n    \"cook_time\": 60\r\n}",
+					"raw": "{\r\n    \"name\": \"Vegetable Biryani\",\r\n    \"description\": \"This is best Vegetable Biryani\",\r\n    \"num_of_servings\": 10,\r\n    \"directions\": \"follow some thing\",\r\n    \"cook_time\": 60\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/recipes",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"recipes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create New Recipe Validation Errors Missing Name",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validation error\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.error.name[0]).to.eql('Missing data for required field.');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"description\": \"This is best Vegetable Biryani\",\r\n    \"num_of_servings\": 10,\r\n    \"directions\": \"follow some thing\",\r\n    \"cook_time\": 60\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/recipes",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"recipes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create New Recipe Validation Errors Invalid num_of_serving",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validation error for number of servings\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.error.num_of_servings[0]).to.eql(\"Number of servings must be greater than 0.\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Vegetable Biryani\",\r\n    \"description\": \"This is best Vegetable Biryani\",\r\n    \"num_of_servings\": 0,\r\n    \"directions\": \"follow some thing\",\r\n    \"cook_time\": 60\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -93,13 +185,13 @@
 				"method": "PUT",
 				"header": [],
 				"url": {
-					"raw": "{{base_url}}/recipes/1/publish",
+					"raw": "{{base_url}}/recipes/{{recipe_id}}/publish",
 					"host": [
 						"{{base_url}}"
 					],
 					"path": [
 						"recipes",
-						"1",
+						"{{recipe_id}}",
 						"publish"
 					]
 				}
@@ -125,13 +217,13 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "{{base_url}}/recipes/1/publish",
+					"raw": "{{base_url}}/recipes/{{recipe_id}}/publish",
 					"host": [
 						"{{base_url}}"
 					],
 					"path": [
 						"recipes",
-						"1",
+						"{{recipe_id}}",
 						"publish"
 					]
 				}
@@ -157,13 +249,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{base_url}}/recipes/1",
+					"raw": "{{base_url}}/recipes/{{recipe_id}}",
 					"host": [
 						"{{base_url}}"
 					],
 					"path": [
 						"recipes",
-						"1"
+						"{{recipe_id}}"
 					]
 				}
 			},
@@ -189,7 +281,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"Vegetable Biryani\",\r\n    \"description\": \"This is best Vegetable Biryani\",\r\n    \"num_of_servings\": 4,\r\n    \"directions\": \"This is how you make it\",\r\n    \"cook_time\": 60\r\n}",
+					"raw": "{\r\n    \"name\": \"Vegetable Biryani\",\r\n    \"description\": \"This is best Vegetable Biryani\",\r\n    \"num_of_servings\": 20,\r\n    \"directions\": \"This is how you make it\",\r\n    \"cook_time\": 60\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -197,13 +289,13 @@
 					}
 				},
 				"url": {
-					"raw": "{{base_url}}/recipes/1",
+					"raw": "{{base_url}}/recipes/{{recipe_id}}",
 					"host": [
 						"{{base_url}}"
 					],
 					"path": [
 						"recipes",
-						"1"
+						"{{recipe_id}}"
 					]
 				}
 			},
@@ -228,13 +320,13 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "{{base_url}}/recipes/1",
+					"raw": "{{base_url}}/recipes/{{recipe_id}}",
 					"host": [
 						"{{base_url}}"
 					],
 					"path": [
 						"recipes",
-						"1"
+						"{{recipe_id}}"
 					]
 				}
 			},
@@ -431,6 +523,10 @@
 		{
 			"key": "base_url",
 			"value": "http://localhost:5000"
+		},
+		{
+			"key": "recipe_id",
+			"value": "1"
 		}
 	]
 }
