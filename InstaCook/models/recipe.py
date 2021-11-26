@@ -46,3 +46,37 @@ class Recipe(db.Model):
             'cook_time': self.cook_time,
             'directions': self.directions,
         }
+
+    def save(self):
+        """
+        This method will be used to save the data to the database
+        """
+        db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        """
+        This is object based delete
+        TODO: Need to implement soft_delete
+        """
+        db.session.delete(self)
+        db.session.commit()
+
+    @classmethod
+    def get_all_published(cls) -> list:
+        """
+        This method is used to get all the published recipes
+        :return: all the published recipes
+        """
+        return cls.query.filter_by(is_publish=True).all()
+
+    @classmethod
+    def get_by_id(cls, recipe_id):
+        """
+        This method returns the recipe by the id
+        :param recipe_id id of the recipe
+        :return: returns recipe if found
+        """
+        return cls.query.filter_by(id=recipe_id).first()
+
+

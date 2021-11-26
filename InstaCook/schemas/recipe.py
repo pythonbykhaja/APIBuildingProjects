@@ -1,4 +1,4 @@
-from marshmallow import Schema, fields, validate,validates, ValidationError
+from marshmallow import Schema, fields, validate,validates, ValidationError, post_dump
 
 
 def validate_num_of_servings(n):
@@ -44,3 +44,9 @@ class RecipeSchema(Schema):
             return ValidationError('Cook time must be greater than 0. ')
         if value > 300:
             return ValidationError('Cook time cannot be greater than 300. ')
+
+    @post_dump(pass_many=True)
+    def wrap(self, data, many, **kwargs):
+        if many:
+            return {'data': data}
+        return data

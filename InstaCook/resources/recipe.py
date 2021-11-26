@@ -1,11 +1,14 @@
+from http import HTTPStatus
+
 from flask import request
 from flask_restful import Resource
-from http import HTTPStatus
-from models.recipe import Recipe, recipe_list
+
+from models.recipe import Recipe
 from schemas.recipe import RecipeSchema
-from marshmallow import ValidationError
 
 recipe_schema = RecipeSchema()
+recipe_list_schema = RecipeSchema(many=True)
+
 
 class RecipeListResource(Resource):
     """
@@ -17,11 +20,8 @@ class RecipeListResource(Resource):
         This method will indicate the get verb
         :return: all the recipes
         """
-        data = []
-        for recipe in recipe_list:
-            if recipe.is_publish is True:
-                data.append(recipe.data)
-        return {'data': data}, HTTPStatus.OK
+        recipes = Recipe.get_all_published()
+        return recipe_list_schema.dump(recipes)['data'], HTTPStatus.OK
 
     def post(self):
         """
@@ -29,12 +29,13 @@ class RecipeListResource(Resource):
         :return: recipe data
         """
         json_data = request.get_json()
-        try:
-            data = recipe_schema.load(data=json_data)
-        except ValidationError as ve:
-            return {'message': 'Validation Error', 'error': ve.messages}, HTTPStatus.BAD_REQUEST
+
+        errors = recipe_schema.validate(data=json_data)
+        if errors:
+            return {'message': 'Validation Error', 'error': errors}, HTTPStatus.BAD_REQUEST
+        data = recipe_schema.load(data=json_data)
         recipe = Recipe(**data)
-        recipe_list.append(recipe)
+        recipe.save()
         return recipe.data, HTTPStatus.CREATED
 
 
@@ -49,7 +50,7 @@ class RecipeResource(Resource):
         :param recipe_id: recipe id to be returned
         :return: recipe if found else NOT_FOUND status
         """
-        recipe = self.find_recipe(recipe_id)
+        recipe = Recipe.get_by_id(recipe_id)
 
         if recipe is None:
             return {'message': 'recipe not found'}, HTTPStatus.NOT_FOUND
@@ -62,16 +63,22 @@ class RecipeResource(Resource):
         :param recipe_id: recipe_id to be updated
         :return: Updated Recipe data if recipe found else NOT_FOUND status
         """
-        recipe = self.find_recipe(recipe_id)
+        recipe = Recipe.get_by_id(recipe_id)
         if recipe is None:
             return {'message': 'recipe not found'}, HTTPStatus.NOT_FOUND
 
-        data = request.get_json()
+        json_data = request.get_json()
+        errors = recipe_schema.validate(data=json_data)
+        if errors:
+            return {'message': 'Validation Error', 'error': errors}, HTTPStatus.BAD_REQUEST
+
+        data = recipe_schema.load(data=json_data)
         recipe.name = data['name']
         recipe.directions = data['directions']
         recipe.num_of_servings = data['num_of_servings']
         recipe.cook_time = data['cook_time']
         recipe.description = data['description']
+        recipe.save()
         return recipe.data, HTTPStatus.OK
 
     def delete(self, recipe_id):
@@ -81,21 +88,11 @@ class RecipeResource(Resource):
         :param recipe_id: id of the recipe to be deleted
         :return: NO_CONTENT if the Recipe is deleted and NOT_FOUND if the recipe is not found
         """
-        recipe = self.find_recipe(recipe_id)
+        recipe = Recipe.get_by_id(recipe_id)
         if recipe is None:
             return {'message': 'recipe not found'}, HTTPStatus.NOT_FOUND
-        recipe_list.remove(recipe)
+        recipe.delete()
         return {}, HTTPStatus.NO_CONTENT
-
-    @staticmethod
-    def find_recipe(recipe_id) -> Recipe:
-        """
-        This method finds the recipe with the id provide
-        :param recipe_id: id of the recipe
-        :return: recipe if found None Otherwise
-        """
-        recipe = next((recipe for recipe in recipe_list if recipe.id == recipe_id), None)
-        return recipe
 
 
 class RecipePublishResource(Resource):
@@ -109,12 +106,13 @@ class RecipePublishResource(Resource):
         :param recipe_id: id of the recipe
         :return: SUCCESS if recipe is found and NOT_FOUND status otherwise
         """
-        recipe = RecipeResource.find_recipe(recipe_id)
+        recipe = Recipe.get_by_id(recipe_id)
 
         if recipe is None:
             return {'message': 'recipe not found'}, HTTPStatus.NOT_FOUND
 
         recipe.is_publish = True
+        recipe.save()
         return {}, HTTPStatus.NO_CONTENT
 
     def delete(self, recipe_id):
@@ -123,9 +121,10 @@ class RecipePublishResource(Resource):
         :param recipe_id: id of the Recipe
         :return: SUCCESS when recipe is unpublished and NOT_FOUND if the recipe is not found
         """
-        recipe = RecipeResource.find_recipe(recipe_id)
+        recipe = Recipe.get_by_id(recipe_id)
         if recipe is None:
             return {'message': 'recipe not found'}, HTTPStatus.NOT_FOUND
 
         recipe.is_publish = False
+        recipe.save()
         return {}, HTTPStatus.NO_CONTENT
