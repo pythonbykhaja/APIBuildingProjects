@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "ee0465d7-9aa2-4c09-8c01-11755a139e0d",
+		"_postman_id": "9b1e4c9f-a107-4093-a318-1e1b547f2d65",
 		"name": "InstaCook",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -14,7 +14,14 @@
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
-							"});"
+							"});\r",
+							"\r",
+							"var json_data = pm.response.json();\r",
+							"console.log(typeof(json_data))\r",
+							"console.log(json_data.length)\r",
+							"pm.collectionVariables.set(\"recipe_count\", json_data.length);\r",
+							"\r",
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -48,6 +55,24 @@
 							"console.log(json_data.id)\r",
 							"pm.test(\"Status code is 201\", function () {\r",
 							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"var schema = {\r",
+							"    \"type\": \"object\",\r",
+							"    \"properties\": {\r",
+							"        \"id\": {\"type\": \"number\"},\r",
+							"        \"name\": {\"type\": \"string\"},\r",
+							"        \"description\": {\"type\": \"string\"},\r",
+							"        \"num_of_servings\": {\"type\": \"number\"},\r",
+							"        \"cook_time\": {\"type\": \"number\"},\r",
+							"        \"directions\": {\"type\": \"string\"}\r",
+							"\r",
+							"    }\r",
+							"};\r",
+							"\r",
+							"\r",
+							"pm.test('Schema is valid', function () {\r",
+							"    pm.expect(tv4.validate(json_data, schema)).to.be.true;\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -88,10 +113,27 @@
 							"pm.test(\"Status code is 400\", function () {\r",
 							"    pm.response.to.have.status(400);\r",
 							"});\r",
-							"\r",
+							"var jsonData = pm.response.json();\r",
 							"pm.test(\"Validation error\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
+							"    \r",
 							"    pm.expect(jsonData.error.name[0]).to.eql('Missing data for required field.');\r",
+							"});\r",
+							"\r",
+							"var schema = {\r",
+							"    \"type\": \"object\",\r",
+							"    \"properties\": {\r",
+							"        \"message\": { \"type\": \"string\" },\r",
+							"        \"error\":  { \r",
+							"            \"type\": \"object\",\r",
+							"            \"properties\": {\r",
+							"                \"name\": {\"type\": \"array\"}\r",
+							"            }\r",
+							"        }\r",
+							"    }\r",
+							"};\r",
+							"\r",
+							"pm.test('Response Schema is valid', function () {\r",
+							"    pm.expect(tv4.validate(jsonData, schema)).to.be.true;\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -199,6 +241,48 @@
 			"response": []
 		},
 		{
+			"name": "Get All Recipes Post Publish",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var json_data = pm.response.json();\r",
+							"console.log(typeof(json_data))\r",
+							"console.log(json_data.length)\r",
+							"\r",
+							"pm.test(\"Number of published resources increased\", function() {\r",
+							"    current_length = json_data.length\r",
+							"    previous_length = pm.variables.get(\"recipe_count\");\r",
+							"    pm.expect(current_length).to.be.greaterThan(previous_length)\r",
+							"}\r",
+							"\r",
+							")"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/recipes",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"recipes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "UnPublish Recipe",
 			"event": [
 				{
@@ -225,6 +309,48 @@
 						"recipes",
 						"{{recipe_id}}",
 						"publish"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Recipes Post Un Publish",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var json_data = pm.response.json();\r",
+							"console.log(typeof(json_data))\r",
+							"console.log(json_data.length)\r",
+							"\r",
+							"pm.test(\"Number of published resources back to normal\", function() {\r",
+							"    current_length = json_data.length\r",
+							"    previous_length = pm.variables.get(\"recipe_count\");\r",
+							"    pm.expect(current_length).to.be.equal(previous_length)\r",
+							"}\r",
+							"\r",
+							")"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/recipes",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"recipes"
 					]
 				}
 			},
@@ -527,6 +653,10 @@
 		{
 			"key": "recipe_id",
 			"value": "1"
+		},
+		{
+			"key": "recipe_count",
+			"value": "0"
 		}
 	]
 }
