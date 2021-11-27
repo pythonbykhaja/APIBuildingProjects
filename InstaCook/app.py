@@ -41,5 +41,5 @@ def register_resources(app):
 
 
 if __name__ == '__main__':
-    app = create_app()
-    app.run(port='5000', host='0.0.0.0', debug=True)
+    flask_app = create_app()
+    flask_app.run(port='5000', host='0.0.0.0', debug=True)

@@ -31,6 +31,7 @@ class Recipe(db.Model):
     is_publish = db.Column(db.Boolean(), default=False)
     created_at = db.Column(db.DateTime(), nullable=False, server_default=db.func.now())
     updated_at = db.Column(db.DateTime(), nullable=False, server_default=db.func.now(), onupdate=db.func.now())
+    is_deleted = db.Column(db.Boolean(), default=False)
 
     @property
     def data(self):
@@ -57,10 +58,17 @@ class Recipe(db.Model):
     def delete(self):
         """
         This is object based delete
-        TODO: Need to implement soft_delete
+        We implement the soft delete pattern
         """
-        db.session.delete(self)
-        db.session.commit()
+        self.is_deleted = True
+        self.save()
+
+    def restore(self):
+        """
+        restore the recipe
+        """
+        self.is_deleted = False
+        self.save()
 
     @classmethod
     def get_all_published(cls) -> list:
@@ -68,7 +76,7 @@ class Recipe(db.Model):
         This method is used to get all the published recipes
         :return: all the published recipes
         """
-        return cls.query.filter_by(is_publish=True).all()
+        return cls.query.filter_by(is_publish=True, is_is_deleted=False).all()
 
     @classmethod
     def get_by_id(cls, recipe_id):
@@ -77,6 +85,6 @@ class Recipe(db.Model):
         :param recipe_id id of the recipe
         :return: returns recipe if found
         """
-        return cls.query.filter_by(id=recipe_id).first()
+        return cls.query.filter_by(id=recipe_id, is_is_deleted=False).first()
 
 
