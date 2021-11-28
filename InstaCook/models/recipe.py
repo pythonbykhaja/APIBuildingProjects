@@ -32,6 +32,9 @@ class Recipe(db.Model):
     created_at = db.Column(db.DateTime(), nullable=False, server_default=db.func.now())
     updated_at = db.Column(db.DateTime(), nullable=False, server_default=db.func.now(), onupdate=db.func.now())
     is_deleted = db.Column(db.Boolean(), default=False, server_default="False", nullable=False)
+    # foreign key
+    user_id = db.Column(db.Integer(), db.ForeignKey("user.id"))
+    user = db.relationship("User", back_populates="recipes")
 
     @property
     def data(self):
@@ -88,3 +91,19 @@ class Recipe(db.Model):
         return cls.query.filter_by(id=recipe_id, is_deleted=False).first()
 
 
+class User(db.Model):
+    """
+    This class represents the user model
+    """
+    __tablename__ = 'user'
+
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), nullable=False, unique=True)
+    email = db.Column(db.String(256), nullable=False, unique=True)
+    password = db.Column(db.String(256), nullable=False)
+    is_deleted = db.Column(db.Boolean(), default=False, server_default="False", nullable=False)
+    created_at = db.Column(db.DateTime(), nullable=False, server_default=db.func.now())
+    updated_at = db.Column(db.DateTime(), nullable=False, server_default=db.func.now(), onupdate=db.func.now())
+
+    # relationship not a field in database
+    recipes = db.relationship('Recipe', backref='user')
