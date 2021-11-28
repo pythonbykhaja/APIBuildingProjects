@@ -157,3 +157,11 @@ class User(db.Model):
         """
         return cls.query.filter_by(id=user_id, is_deleted=False).first()
 
+    @property
+    def data(self):
+        return {
+            'id': self.id,
+            'username': self.username,
+            'email': self.email
+        }
+
