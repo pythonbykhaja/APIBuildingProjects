@@ -107,3 +107,53 @@ class User(db.Model):
 
     # relationship not a field in database
     recipes = db.relationship('Recipe', backref='user')
+
+    def save(self):
+        """
+        This method will be used to save the data to the database
+        """
+        db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        """
+        This is object based delete
+        We implement the soft delete pattern
+        """
+        self.is_deleted = True
+        self.save()
+
+    def restore(self):
+        """
+        restore the recipe
+        """
+        self.is_deleted = False
+        self.save()
+
+    @classmethod
+    def get_by_username(cls, username):
+        """
+        Gets the user by the username
+        :param username: username
+        :return: user model object
+        """
+        return cls.query.filter_by(username=username, is_deleted=False).first()
+
+    @classmethod
+    def get_by_email(cls, email):
+        """
+        Gets the user by email id
+        :param email: email id
+        :return: user model Object
+        """
+        return cls.query.filter_by(email=email, is_deleted=False).first()
+
+    @classmethod
+    def get_by_id(cls, user_id):
+        """
+        Gets the User by the id
+        :param user_id: id of the user
+        :return: User model Object
+        """
+        return cls.query.filter_by(id=user_id, is_deleted=False).first()
+
