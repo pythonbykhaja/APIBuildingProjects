@@ -34,7 +34,7 @@ class Recipe(db.Model):
     is_deleted = db.Column(db.Boolean(), default=False, server_default="False", nullable=False)
     # foreign key
     user_id = db.Column(db.Integer(), db.ForeignKey("user.id"))
-    user = db.relationship("User", back_populates="recipes")
+
 
     @property
     def data(self):
