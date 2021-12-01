@@ -14,3 +14,5 @@ class Config:
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = f'postgresql+psycopg2://{__username}:{__password}@{__host}:{__port}/{__db_name}'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SECRET_KEY = '11b05b0a-66ee-4448-be4d-f8f83a27ef73'
+    JWT_ERROR_MESSAGE_KEY = 'message'
