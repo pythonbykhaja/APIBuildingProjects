@@ -6,82 +6,155 @@
 	},
 	"item": [
 		{
-			"name": "Create a new user",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"username\": \"qtpython\",\r\n    \"email\": \"qtpython@gmail.com\",\r\n    \"password\": \"qtpython@123\"\r\n\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Create a new user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"qtpython\",\r\n    \"email\": \"qtpython@gmail.com\",\r\n    \"password\": \"qtpython@123\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{base_url}}/users",
-					"host": [
-						"{{base_url}}"
-					],
-					"path": [
-						"users"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Create a new user with same username and different emailid",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"username\": \"qtpython\",\r\n    \"email\": \"qtpython1@gmail.com\",\r\n    \"password\": \"qtpython@123\"\r\n\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+				{
+					"name": "Create a new user with same username and different emailid",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"qtpython\",\r\n    \"email\": \"qtpython1@gmail.com\",\r\n    \"password\": \"qtpython@123\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{base_url}}/users",
-					"host": [
-						"{{base_url}}"
-					],
-					"path": [
-						"users"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Create a new user with different username and same emailid",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"username\": \"qtpython1\",\r\n    \"email\": \"qtpython@gmail.com\",\r\n    \"password\": \"qtpython@123\"\r\n\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+				{
+					"name": "Create a new user with different username and same emailid",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"qtpython1\",\r\n    \"email\": \"qtpython@gmail.com\",\r\n    \"password\": \"qtpython@123\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{base_url}}/users",
-					"host": [
-						"{{base_url}}"
-					],
-					"path": [
-						"users"
-					]
+				{
+					"name": "Request For Access Token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"qtpython@gmail.com\",\r\n    \"password\": \"qtpython@123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/token",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Information unauthenticated",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/qtpython",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"qtpython"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Information authenticated",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTYzODQ0NzgwOSwianRpIjoiMDEzZTdmNWUtNWY1MC00OWRjLTlkNzItNDU1MjNlYWY3MWVjIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MSwibmJmIjoxNjM4NDQ3ODA5LCJleHAiOjE2Mzg0NDg3MDl9.eeHN8yn7BemPAbMBdm07LQAG90dwQ5kTqiLYtD1MnTA",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/users/qtpython",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"qtpython"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
 			"name": "Get All Recipes",

@@ -1,7 +1,8 @@
 from flask import Flask
 from flask_restful import Api
 from resources.recipe import RecipeListResource, RecipeResource, RecipePublishResource
-from resources.user import UserListRecipe
+from resources.user import UserListRecipe, UserResource
+from resources.token import TokenResource
 from config import Config
 from extensions import db, jwt
 from flask_migrate import Migrate
@@ -41,6 +42,8 @@ def register_resources(app):
     api.add_resource(RecipeResource, '/recipes/<int:recipe_id>')
     api.add_resource(RecipePublishResource, '/recipes/<int:recipe_id>/publish')
     api.add_resource(UserListRecipe, '/users')
+    api.add_resource(TokenResource, '/token')
+    api.add_resource(UserResource, '/users/<string:username>')
 
 
 if __name__ == '__main__':
