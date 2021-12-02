@@ -66,3 +66,24 @@ class UserResource(Resource):
                 'username': user.username
             }
         return data, HTTPStatus.OK
+
+
+class MeResource(Resource):
+    """
+    This class will send the user information only for the logged users
+    if the user is not logged 401 unauthenticated status should be sent
+    """
+
+    @jwt_required()
+    def get(self):
+        """
+        Get the user information of the logged in user
+        :return: user info
+        """
+        user = User.get_by_id(get_jwt_identity())
+        data = {
+            'id': user.id,
+            'username': user.username,
+            'email': user.email
+        }
+        return data, HTTPStatus.OK

@@ -153,6 +153,52 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Get the Logged in user info",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTYzODQ0ODY0MCwianRpIjoiMDNhOTg2OGQtMmM4ZC00ZjhiLTk0NWYtNzFhYmI2MGVhMGIyIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MSwibmJmIjoxNjM4NDQ4NjQwLCJleHAiOjE2Mzg0NDk1NDB9.qWzUNxYNTUchofcIykjEE_0ZdGNoVzky8cSdAHJ6uf4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/me",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid Header: Get the Logged in user info",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/me",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"me"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
