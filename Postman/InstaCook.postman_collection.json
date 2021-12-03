@@ -88,6 +88,22 @@
 				},
 				{
 					"name": "Request For Access Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json_data = pm.response.json();\r",
+									"console.log(json_data.access_token)\r",
+									"pm.collectionVariables.set(\"valid_access_token\", json_data.access_token);\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -137,7 +153,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTYzODQ0NzgwOSwianRpIjoiMDEzZTdmNWUtNWY1MC00OWRjLTlkNzItNDU1MjNlYWY3MWVjIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MSwibmJmIjoxNjM4NDQ3ODA5LCJleHAiOjE2Mzg0NDg3MDl9.eeHN8yn7BemPAbMBdm07LQAG90dwQ5kTqiLYtD1MnTA",
+								"value": "Bearer {{valid_access_token}}",
 								"type": "text"
 							}
 						],
@@ -161,10 +177,27 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTYzODQ0ODY0MCwianRpIjoiMDNhOTg2OGQtMmM4ZC00ZjhiLTk0NWYtNzFhYmI2MGVhMGIyIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MSwibmJmIjoxNjM4NDQ4NjQwLCJleHAiOjE2Mzg0NDk1NDB9.qWzUNxYNTUchofcIykjEE_0ZdGNoVzky8cSdAHJ6uf4",
+								"value": "Bearer {{valid_access_token}}",
 								"type": "text"
 							}
 						],
+						"url": {
+							"raw": "{{base_url}}/me",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid: Get the Logged in user Un Autheticated",
+					"request": {
+						"method": "GET",
+						"header": [],
 						"url": {
 							"raw": "{{base_url}}/me",
 							"host": [
@@ -184,7 +217,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+								"value": "Bearer {{invalid_access_token}}",
 								"type": "text"
 							}
 						],
@@ -203,623 +236,868 @@
 			]
 		},
 		{
-			"name": "Get All Recipes",
-			"event": [
+			"name": "ValidUserRecipeManagement",
+			"item": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"var json_data = pm.response.json();\r",
-							"console.log(typeof(json_data))\r",
-							"console.log(json_data.length)\r",
-							"pm.collectionVariables.set(\"recipe_count\", json_data.length);\r",
-							"\r",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{base_url}}/recipes",
-					"host": [
-						"{{base_url}}"
-					],
-					"path": [
-						"recipes"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Create New Recipe",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"var json_data = pm.response.json();\r",
-							"pm.collectionVariables.set(\"recipe_id\", json_data.id);\r",
-							"console.log(json_data)\r",
-							"console.log(json_data.id)\r",
-							"pm.test(\"Status code is 201\", function () {\r",
-							"    pm.response.to.have.status(201);\r",
-							"});\r",
-							"\r",
-							"var schema = {\r",
-							"    \"type\": \"object\",\r",
-							"    \"properties\": {\r",
-							"        \"id\": {\"type\": \"number\"},\r",
-							"        \"name\": {\"type\": \"string\"},\r",
-							"        \"description\": {\"type\": \"string\"},\r",
-							"        \"num_of_servings\": {\"type\": \"number\"},\r",
-							"        \"cook_time\": {\"type\": \"number\"},\r",
-							"        \"directions\": {\"type\": \"string\"}\r",
-							"\r",
-							"    }\r",
-							"};\r",
-							"\r",
-							"\r",
-							"pm.test('Schema is valid', function () {\r",
-							"    pm.expect(tv4.validate(json_data, schema)).to.be.true;\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"Vegetable Biryani\",\r\n    \"description\": \"This is best Vegetable Biryani\",\r\n    \"num_of_servings\": 10,\r\n    \"directions\": \"follow some thing\",\r\n    \"cook_time\": 60\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+					"name": "Get All Recipes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var json_data = pm.response.json();\r",
+									"console.log(typeof(json_data))\r",
+									"console.log(json_data.length)\r",
+									"pm.collectionVariables.set(\"recipe_count\", json_data.length);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
 						}
-					}
-				},
-				"url": {
-					"raw": "{{base_url}}/recipes",
-					"host": [
-						"{{base_url}}"
 					],
-					"path": [
-						"recipes"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Create New Recipe Validation Errors Missing Name",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 400\", function () {\r",
-							"    pm.response.to.have.status(400);\r",
-							"});\r",
-							"var jsonData = pm.response.json();\r",
-							"pm.test(\"Validation error\", function () {\r",
-							"    \r",
-							"    pm.expect(jsonData.error.name[0]).to.eql('Missing data for required field.');\r",
-							"});\r",
-							"\r",
-							"var schema = {\r",
-							"    \"type\": \"object\",\r",
-							"    \"properties\": {\r",
-							"        \"message\": { \"type\": \"string\" },\r",
-							"        \"error\":  { \r",
-							"            \"type\": \"object\",\r",
-							"            \"properties\": {\r",
-							"                \"name\": {\"type\": \"array\"}\r",
-							"            }\r",
-							"        }\r",
-							"    }\r",
-							"};\r",
-							"\r",
-							"pm.test('Response Schema is valid', function () {\r",
-							"    pm.expect(tv4.validate(jsonData, schema)).to.be.true;\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"description\": \"This is best Vegetable Biryani\",\r\n    \"num_of_servings\": 10,\r\n    \"directions\": \"follow some thing\",\r\n    \"cook_time\": 60\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/recipes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"recipes"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{base_url}}/recipes",
-					"host": [
-						"{{base_url}}"
-					],
-					"path": [
-						"recipes"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Create New Recipe Validation Errors Invalid num_of_serving",
-			"event": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 400\", function () {\r",
-							"    pm.response.to.have.status(400);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Validation error for number of servings\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData.error.num_of_servings[0]).to.eql(\"Number of servings must be greater than 0.\");\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"Vegetable Biryani\",\r\n    \"description\": \"This is best Vegetable Biryani\",\r\n    \"num_of_servings\": 0,\r\n    \"directions\": \"follow some thing\",\r\n    \"cook_time\": 60\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json_data = pm.response.json();\r",
+									"console.log(json_data.access_token)\r",
+									"pm.collectionVariables.set(\"valid_access_token\", json_data.access_token);\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
 						}
-					}
-				},
-				"url": {
-					"raw": "{{base_url}}/recipes",
-					"host": [
-						"{{base_url}}"
 					],
-					"path": [
-						"recipes"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Publish Recipe",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 204\", function () {\r",
-							"    pm.response.to.have.status(204);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"url": {
-					"raw": "{{base_url}}/recipes/{{recipe_id}}/publish",
-					"host": [
-						"{{base_url}}"
-					],
-					"path": [
-						"recipes",
-						"{{recipe_id}}",
-						"publish"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get All Recipes Post Publish",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"var json_data = pm.response.json();\r",
-							"console.log(typeof(json_data))\r",
-							"console.log(json_data.length)\r",
-							"\r",
-							"pm.test(\"Number of published resources increased\", function() {\r",
-							"    current_length = json_data.length\r",
-							"    previous_length = pm.variables.get(\"recipe_count\");\r",
-							"    pm.expect(current_length).to.be.greaterThan(previous_length)\r",
-							"}\r",
-							"\r",
-							")"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{base_url}}/recipes",
-					"host": [
-						"{{base_url}}"
-					],
-					"path": [
-						"recipes"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "UnPublish Recipe",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 204\", function () {\r",
-							"    pm.response.to.have.status(204);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "{{base_url}}/recipes/{{recipe_id}}/publish",
-					"host": [
-						"{{base_url}}"
-					],
-					"path": [
-						"recipes",
-						"{{recipe_id}}",
-						"publish"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get All Recipes Post Un Publish",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"var json_data = pm.response.json();\r",
-							"console.log(typeof(json_data))\r",
-							"console.log(json_data.length)\r",
-							"\r",
-							"pm.test(\"Number of published resources back to normal\", function() {\r",
-							"    current_length = json_data.length\r",
-							"    previous_length = pm.variables.get(\"recipe_count\");\r",
-							"    pm.expect(current_length).to.be.equal(previous_length)\r",
-							"}\r",
-							"\r",
-							")"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{base_url}}/recipes",
-					"host": [
-						"{{base_url}}"
-					],
-					"path": [
-						"recipes"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get Specific Recipe",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{base_url}}/recipes/{{recipe_id}}",
-					"host": [
-						"{{base_url}}"
-					],
-					"path": [
-						"recipes",
-						"{{recipe_id}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Update Recipe",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"Vegetable Biryani\",\r\n    \"description\": \"This is best Vegetable Biryani\",\r\n    \"num_of_servings\": 20,\r\n    \"directions\": \"This is how you make it\",\r\n    \"cook_time\": 60\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"qtpython@gmail.com\",\r\n    \"password\": \"qtpython@123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/token",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"token"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{base_url}}/recipes/{{recipe_id}}",
-					"host": [
-						"{{base_url}}"
-					],
-					"path": [
-						"recipes",
-						"{{recipe_id}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Delete the Recipe",
-			"event": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 204\", function () {\r",
-							"    pm.response.to.have.status(204);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "{{base_url}}/recipes/{{recipe_id}}",
-					"host": [
-						"{{base_url}}"
-					],
-					"path": [
-						"recipes",
-						"{{recipe_id}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get Non Existing Recipe",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 404\", function () {\r",
-							"    pm.response.to.have.status(404);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{base_url}}/recipes/99999",
-					"host": [
-						"{{base_url}}"
-					],
-					"path": [
-						"recipes",
-						"99999"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Update Non Existing Recipe",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 404\", function () {\r",
-							"    pm.response.to.have.status(404);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"Vegetable Biryani\",\r\n    \"description\": \"This is best Vegetable Biryani\",\r\n    \"num_of_servings\": 4,\r\n    \"directions\": \"follow some thing\",\r\n    \"cook_time\": 60\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+					"name": "Create New Recipe",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json_data = pm.response.json();\r",
+									"pm.collectionVariables.set(\"recipe_id\", json_data.id);\r",
+									"console.log(json_data)\r",
+									"console.log(json_data.id)\r",
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"var schema = {\r",
+									"    \"type\": \"object\",\r",
+									"    \"properties\": {\r",
+									"        \"id\": {\"type\": \"number\"},\r",
+									"        \"name\": {\"type\": \"string\"},\r",
+									"        \"description\": {\"type\": \"string\"},\r",
+									"        \"num_of_servings\": {\"type\": \"number\"},\r",
+									"        \"cook_time\": {\"type\": \"number\"},\r",
+									"        \"directions\": {\"type\": \"string\"}\r",
+									"\r",
+									"    }\r",
+									"};\r",
+									"\r",
+									"\r",
+									"pm.test('Schema is valid', function () {\r",
+									"    pm.expect(tv4.validate(json_data, schema)).to.be.true;\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
 						}
-					}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{valid_access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Vegetable Biryani\",\r\n    \"description\": \"This is best Vegetable Biryani\",\r\n    \"num_of_servings\": 10,\r\n    \"directions\": \"follow some thing\",\r\n    \"cook_time\": 60\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/recipes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"recipes"
+							]
+						}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{base_url}}/recipes/99999",
-					"host": [
-						"{{base_url}}"
+				{
+					"name": "Create New Recipe Validation Errors Missing Name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.test(\"Validation error\", function () {\r",
+									"    \r",
+									"    pm.expect(jsonData.error.name[0]).to.eql('Missing data for required field.');\r",
+									"});\r",
+									"\r",
+									"var schema = {\r",
+									"    \"type\": \"object\",\r",
+									"    \"properties\": {\r",
+									"        \"message\": { \"type\": \"string\" },\r",
+									"        \"error\":  { \r",
+									"            \"type\": \"object\",\r",
+									"            \"properties\": {\r",
+									"                \"name\": {\"type\": \"array\"}\r",
+									"            }\r",
+									"        }\r",
+									"    }\r",
+									"};\r",
+									"\r",
+									"pm.test('Response Schema is valid', function () {\r",
+									"    pm.expect(tv4.validate(jsonData, schema)).to.be.true;\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
 					],
-					"path": [
-						"recipes",
-						"99999"
-					]
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{valid_access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\": \"This is best Vegetable Biryani\",\r\n    \"num_of_servings\": 10,\r\n    \"directions\": \"follow some thing\",\r\n    \"cook_time\": 60\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/recipes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"recipes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create New Recipe Validation Errors Invalid num_of_serving",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Validation error for number of servings\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error.num_of_servings[0]).to.eql(\"Number of servings must be greater than 0.\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{valid_access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Vegetable Biryani\",\r\n    \"description\": \"This is best Vegetable Biryani\",\r\n    \"num_of_servings\": 0,\r\n    \"directions\": \"follow some thing\",\r\n    \"cook_time\": 60\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/recipes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"recipes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Publish Recipe",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{valid_access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/recipes/{{recipe_id}}/publish",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"recipes",
+								"{{recipe_id}}",
+								"publish"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Recipes Post Publish",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var json_data = pm.response.json();\r",
+									"console.log(typeof(json_data))\r",
+									"console.log(json_data.length)\r",
+									"\r",
+									"pm.test(\"Number of published resources increased\", function() {\r",
+									"    current_length = json_data.length\r",
+									"    previous_length = pm.variables.get(\"recipe_count\");\r",
+									"    pm.expect(current_length).to.be.greaterThan(previous_length)\r",
+									"}\r",
+									"\r",
+									")"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{valid_access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/recipes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"recipes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UnPublish Recipe",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{valid_access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/recipes/{{recipe_id}}/publish",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"recipes",
+								"{{recipe_id}}",
+								"publish"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Recipes Post Un Publish",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var json_data = pm.response.json();\r",
+									"console.log(typeof(json_data))\r",
+									"console.log(json_data.length)\r",
+									"\r",
+									"pm.test(\"Number of published resources back to normal\", function() {\r",
+									"    current_length = json_data.length\r",
+									"    previous_length = pm.variables.get(\"recipe_count\");\r",
+									"    pm.expect(current_length).to.be.equal(previous_length)\r",
+									"}\r",
+									"\r",
+									")"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/recipes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"recipes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Specific Recipe",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{valid_access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/recipes/{{recipe_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"recipes",
+								"{{recipe_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Recipe",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{valid_access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Vegetable Biryani\",\r\n    \"description\": \"This is best Vegetable Biryani\",\r\n    \"num_of_servings\": 20,\r\n    \"directions\": \"This is how you make it\",\r\n    \"cook_time\": 60\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/recipes/{{recipe_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"recipes",
+								"{{recipe_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete the Recipe",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{valid_access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/recipes/{{recipe_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"recipes",
+								"{{recipe_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Non Existing Recipe",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{valid_access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/recipes/99999",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"recipes",
+								"99999"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Non Existing Recipe",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{valid_access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Vegetable Biryani\",\r\n    \"description\": \"This is best Vegetable Biryani\",\r\n    \"num_of_servings\": 4,\r\n    \"directions\": \"follow some thing\",\r\n    \"cook_time\": 60\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/recipes/99999",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"recipes",
+								"99999"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Publish Non Existing Recipe",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{valid_access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/recipes/99999/publish",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"recipes",
+								"99999",
+								"publish"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Un Publish Non Existing Recipe",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{valid_access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/recipes/99999/publish",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"recipes",
+								"99999",
+								"publish"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Non Existing Recipe",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{valid_access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/recipes/99999",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"recipes",
+								"99999"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "Publish Non Existing Recipe",
-			"event": [
+			"name": "InvalidUserRecipeManagment",
+			"item": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 404\", function () {\r",
-							"    pm.response.to.have.status(404);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"url": {
-					"raw": "{{base_url}}/recipes/99999/publish",
-					"host": [
-						"{{base_url}}"
+					"name": "Create User 2",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"qtflask\",\r\n    \"email\": \"qtflask@gmail.com\",\r\n    \"password\": \"qtpython@123\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User2 Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json_data = pm.response.json();\r",
+									"console.log(json_data.access_token)\r",
+									"pm.collectionVariables.set(\"user2_access_token\", json_data.access_token);\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
 					],
-					"path": [
-						"recipes",
-						"99999",
-						"publish"
-					]
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"qtflask@gmail.com\",\r\n    \"password\": \"qtpython@123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/token",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Specific Recipe Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{user2_access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/recipes/{{recipe_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"recipes",
+								"{{recipe_id}}"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "Un Publish Non Existing Recipe",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 404\", function () {\r",
-							"    pm.response.to.have.status(404);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "{{base_url}}/recipes/99999/publish",
-					"host": [
-						"{{base_url}}"
-					],
-					"path": [
-						"recipes",
-						"99999",
-						"publish"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Delete Non Existing Recipe",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 404\", function () {\r",
-							"    pm.response.to.have.status(404);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "{{base_url}}/recipes/99999",
-					"host": [
-						"{{base_url}}"
-					],
-					"path": [
-						"recipes",
-						"99999"
-					]
-				}
-			},
-			"response": []
+			"name": "Un Authenticated User Recipe Management",
+			"item": []
 		}
 	],
 	"event": [
@@ -854,6 +1132,18 @@
 		{
 			"key": "recipe_count",
 			"value": "0"
+		},
+		{
+			"key": "valid_access_token",
+			"value": "----"
+		},
+		{
+			"key": "invalid_access_token",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+		},
+		{
+			"key": "user2_access_token",
+			"value": "----"
 		}
 	]
 }

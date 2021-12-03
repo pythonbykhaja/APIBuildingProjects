@@ -48,7 +48,7 @@ class RecipeResource(Resource):
     This class implements the put and get specific recipe implementations
     """
 
-    @jwt_required(optional=False)
+    @jwt_required(optional=True)
     def get(self, recipe_id):
         """
         This method implements the get request on the specific id
@@ -122,6 +122,7 @@ class RecipePublishResource(Resource):
     This class represents a Rest Resource to Publish and UnPublish Recipes
     """
 
+    @jwt_required()
     def put(self, recipe_id):
         """
         This method is used to publish the Recipe
@@ -142,6 +143,7 @@ class RecipePublishResource(Resource):
         recipe.save()
         return {}, HTTPStatus.NO_CONTENT
 
+    @jwt_required()
     def delete(self, recipe_id):
         """
         This method will un publish the Recipe
