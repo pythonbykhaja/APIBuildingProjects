@@ -1,20 +1,5 @@
 from extensions import db
 
-recipe_list = []
-
-
-def get_last_id():
-    """
-    This method will return the last id
-    :return: id to be generated
-    """
-    if recipe_list:
-        last_recipe = recipe_list[-1]
-    else:
-        return 1
-
-    return last_recipe.id + 1
-
 
 class Recipe(db.Model):
     """
@@ -35,7 +20,6 @@ class Recipe(db.Model):
     # foreign key
     user_id = db.Column(db.Integer(), db.ForeignKey("user.id"))
 
-
     @property
     def data(self):
         """
@@ -49,6 +33,7 @@ class Recipe(db.Model):
             'num_of_servings': self.num_of_servings,
             'cook_time': self.cook_time,
             'directions': self.directions,
+            'user_id': self.user_id,
         }
 
     def save(self):
@@ -164,4 +149,3 @@ class User(db.Model):
             'username': self.username,
             'email': self.email
         }
-
