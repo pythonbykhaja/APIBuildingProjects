@@ -5,6 +5,7 @@ from flask_restful import Resource
 
 from models.recipe import Recipe
 from schemas.recipe import RecipeSchema
+from flask_jwt_extended import get_jwt_identity, jwt_required
 
 recipe_schema = RecipeSchema()
 recipe_list_schema = RecipeSchema(many=True)
@@ -23,6 +24,7 @@ class RecipeListResource(Resource):
         recipes = Recipe.get_all_published()
         return recipe_list_schema.dump(recipes)['data'], HTTPStatus.OK
 
+    @jwt_required()
     def post(self):
         """
         This method will indicate the post verb
@@ -33,8 +35,10 @@ class RecipeListResource(Resource):
         errors = recipe_schema.validate(data=json_data)
         if errors:
             return {'message': 'Validation Error', 'error': errors}, HTTPStatus.BAD_REQUEST
+        current_user = get_jwt_identity()
         data = recipe_schema.load(data=json_data)
         recipe = Recipe(**data)
+        recipe.user_id = current_user
         recipe.save()
         return recipe.data, HTTPStatus.CREATED
 
@@ -44,6 +48,7 @@ class RecipeResource(Resource):
     This class implements the put and get specific recipe implementations
     """
 
+    @jwt_required(optional=False)
     def get(self, recipe_id):
         """
         This method implements the get request on the specific id
@@ -55,8 +60,14 @@ class RecipeResource(Resource):
         if recipe is None:
             return {'message': 'recipe not found'}, HTTPStatus.NOT_FOUND
 
+        current_user = get_jwt_identity()
+
+        if recipe.is_publish is False and recipe.user_id != current_user:
+            return {'message': 'Access is not allowed'}, HTTPStatus.FORBIDDEN
+
         return recipe.data, HTTPStatus.OK
 
+    @jwt_required()
     def put(self, recipe_id):
         """
         This method will implement the PUT request
@@ -66,6 +77,11 @@ class RecipeResource(Resource):
         recipe = Recipe.get_by_id(recipe_id)
         if recipe is None:
             return {'message': 'recipe not found'}, HTTPStatus.NOT_FOUND
+
+        current_user = get_jwt_identity()
+
+        if current_user != recipe.user_id:
+            return {'message': 'Access is not allowed'}, HTTPStatus.FORBIDDEN
 
         json_data = request.get_json()
         errors = recipe_schema.validate(data=json_data)
@@ -81,6 +97,7 @@ class RecipeResource(Resource):
         recipe.save()
         return recipe.data, HTTPStatus.OK
 
+    @jwt_required()
     def delete(self, recipe_id):
         """
         Delete implementation of the Recipe
@@ -91,6 +108,11 @@ class RecipeResource(Resource):
         recipe = Recipe.get_by_id(recipe_id)
         if recipe is None:
             return {'message': 'recipe not found'}, HTTPStatus.NOT_FOUND
+        current_user = get_jwt_identity()
+
+        if current_user != recipe.user_id:
+            return {'message': 'Access is not allowed'}, HTTPStatus.FORBIDDEN
+
         recipe.delete()
         return {}, HTTPStatus.NO_CONTENT
 
@@ -111,6 +133,11 @@ class RecipePublishResource(Resource):
         if recipe is None:
             return {'message': 'recipe not found'}, HTTPStatus.NOT_FOUND
 
+        current_user = get_jwt_identity()
+
+        if current_user != recipe.user_id:
+            return {'message': 'Access is not allowed'}, HTTPStatus.FORBIDDEN
+
         recipe.is_publish = True
         recipe.save()
         return {}, HTTPStatus.NO_CONTENT
@@ -124,6 +151,11 @@ class RecipePublishResource(Resource):
         recipe = Recipe.get_by_id(recipe_id)
         if recipe is None:
             return {'message': 'recipe not found'}, HTTPStatus.NOT_FOUND
+
+        current_user = get_jwt_identity()
+
+        if current_user != recipe.user_id:
+            return {'message': 'Access is not allowed'}, HTTPStatus.FORBIDDEN
 
         recipe.is_publish = False
         recipe.save()
