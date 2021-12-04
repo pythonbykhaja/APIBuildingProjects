@@ -1,4 +1,5 @@
 import os
+import datetime
 
 
 class Config:
@@ -16,3 +17,7 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = '11b05b0a-66ee-4448-be4d-f8f83a27ef73'
     JWT_ERROR_MESSAGE_KEY = 'message'
+
+    # Can change when the tokens expire
+    JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(minutes=15)
+    JWT_REFRESH_TOKEN_EXPIRES = datetime.timedelta(days=30)

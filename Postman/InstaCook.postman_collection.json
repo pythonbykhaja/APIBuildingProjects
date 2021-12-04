@@ -96,6 +96,7 @@
 									"var json_data = pm.response.json();\r",
 									"console.log(json_data.access_token)\r",
 									"pm.collectionVariables.set(\"valid_access_token\", json_data.access_token);\r",
+									"pm.collectionVariables.set(\"user1_refresh_token\", json_data.refresh_token)\r",
 									"pm.test(\"Status code is 200\", function () {\r",
 									"    pm.response.to.have.status(200);\r",
 									"});"
@@ -232,6 +233,46 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Refresh the access token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json_data = pm.response.json();\r",
+									"console.log(json_data.access_token)\r",
+									"pm.collectionVariables.set(\"valid_access_token\", json_data.access_token);\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{user1_refresh_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/refresh",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"refresh"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -285,6 +326,7 @@
 									"var json_data = pm.response.json();\r",
 									"console.log(json_data.access_token)\r",
 									"pm.collectionVariables.set(\"valid_access_token\", json_data.access_token);\r",
+									"pm.collectionVariables.set(\"user1_refresh_token\", json_data.refresh_token)\r",
 									"pm.test(\"Status code is 200\", function () {\r",
 									"    pm.response.to.have.status(200);\r",
 									"});"
@@ -1024,6 +1066,7 @@
 									"var json_data = pm.response.json();\r",
 									"console.log(json_data.access_token)\r",
 									"pm.collectionVariables.set(\"user2_access_token\", json_data.access_token);\r",
+									"pm.collectionVariables.set(\"user2_refresh_token\", json_data.refresh_token)\r",
 									"pm.test(\"Status code is 200\", function () {\r",
 									"    pm.response.to.have.status(200);\r",
 									"});"
@@ -1144,6 +1187,14 @@
 		{
 			"key": "user2_access_token",
 			"value": "----"
+		},
+		{
+			"key": "user1_refresh_token",
+			"value": "----"
+		},
+		{
+			"key": "user2_refresh_token",
+			"value": "---"
 		}
 	]
 }
