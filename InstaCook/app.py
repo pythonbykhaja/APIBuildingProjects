@@ -2,10 +2,11 @@ from flask import Flask
 from flask_restful import Api
 from resources.recipe import RecipeListResource, RecipeResource, RecipePublishResource
 from resources.user import UserListRecipe, UserResource, MeResource
-from resources.token import TokenResource, RefreshResource
+from resources.token import TokenResource, RefreshResource, RevokeResource
 from config import Config
 from extensions import db, jwt
 from flask_migrate import Migrate
+from models.recipe import TokenBlackList
 
 
 def create_app() -> Flask:
@@ -30,6 +31,19 @@ def register_extensions(app):
     migrate = Migrate(app, db)
     jwt.init_app(app)
 
+    @jwt.token_in_blocklist_loader
+    def check_if_token_in_black_list(jwt_header, jwt_payload):
+        """
+        This function will check for the validity of the token.
+        If the user has logged out, the token appers in blocked list
+        :param jwt_header:
+        :param jwt_payload:
+        :return:
+        """
+        jti = jwt_payload["jti"]
+        token = TokenBlackList.get_by_jti(jti)
+        return token is not None
+
 
 def register_resources(app):
     """
@@ -45,6 +59,7 @@ def register_resources(app):
 
     api.add_resource(TokenResource, '/token')
     api.add_resource(RefreshResource, '/refresh')
+    api.add_resource(RevokeResource, '/revoke')
 
     api.add_resource(RecipeListResource, '/recipes')
     api.add_resource(RecipeResource, '/recipes/<int:recipe_id>')

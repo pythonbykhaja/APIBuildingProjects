@@ -150,6 +150,7 @@ class User(db.Model):
             'email': self.email
         }
 
+
 class TokenBlackList(db.Model):
     """
     This class represents the Token Black List
@@ -160,3 +161,19 @@ class TokenBlackList(db.Model):
     jti = db.Column(db.String(36), nullable=False)
     created_at = db.Column(db.DateTime(), nullable=False, server_default=db.func.now())
     updated_at = db.Column(db.DateTime(), nullable=False, server_default=db.func.now(), onupdate=db.func.now())
+
+    def save(self):
+        """
+        This method will be used to save the data to the database
+        """
+        db.session.add(self)
+        db.session.commit()
+
+    @classmethod
+    def get_by_jti(cls, jti):
+        """
+        This method will search for the token in the black list model
+        :param jti: jti of the jwt toke
+        :return: token if found, None if not found
+        """
+        return cls.query.filter_by(jti=jti).first()

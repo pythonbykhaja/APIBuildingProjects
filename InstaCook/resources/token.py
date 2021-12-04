@@ -1,13 +1,14 @@
 from flask_restful import Resource
 from flask import request
 from http import HTTPStatus
-from models.recipe import User
+from models.recipe import User, TokenBlackList
 from utils import check_password
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
     get_jwt_identity,
-    jwt_required
+    jwt_required,
+    get_jwt
 )
 
 
@@ -35,7 +36,7 @@ class TokenResource(Resource):
 
         access_token = create_access_token(identity=user.id, fresh=True)
         refresh_token = create_refresh_token(identity=user.id)
-        return {'access_token': access_token, 'refresh_token': refresh_token }, HTTPStatus.OK
+        return {'access_token': access_token, 'refresh_token': refresh_token}, HTTPStatus.OK
 
 
 class RefreshResource(Resource):
@@ -53,3 +54,23 @@ class RefreshResource(Resource):
         current_user = get_jwt_identity()
         access_token = create_access_token(identity=current_user, fresh=False)
         return {'access_token': access_token}, HTTPStatus.OK
+
+
+class RevokeResource(Resource):
+    """
+    This class will implement the Token Black listing
+    """
+
+    @jwt_required()
+    def post(self):
+        """
+        This method will implement the logout functionality
+        :return:
+        """
+        jti = get_jwt()['jti']
+        token_black_list_item = TokenBlackList(jti=jti)
+        token_black_list_item.save()
+        return {'message': 'Successfully logged out'}, HTTPStatus.OK
+
+
+
