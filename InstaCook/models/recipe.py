@@ -149,3 +149,14 @@ class User(db.Model):
             'username': self.username,
             'email': self.email
         }
+
+class TokenBlackList(db.Model):
+    """
+    This class represents the Token Black List
+    """
+    __tablename__ = 'tokenblacklist'
+
+    id = db.Column(db.Integer, primary_key=True)
+    jti = db.Column(db.String(36), nullable=False)
+    created_at = db.Column(db.DateTime(), nullable=False, server_default=db.func.now())
+    updated_at = db.Column(db.DateTime(), nullable=False, server_default=db.func.now(), onupdate=db.func.now())
