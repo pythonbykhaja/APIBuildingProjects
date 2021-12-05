@@ -1,5 +1,7 @@
 from marshmallow import Schema, fields, validate,validates, ValidationError, post_dump
 
+from schemas.user import UserSchema
+
 
 def validate_num_of_servings(n):
     """
@@ -29,6 +31,7 @@ class RecipeSchema(Schema):
     cook_time = fields.Integer()
     directions = fields.String(validate=[validate.Length(max=1000)])
     is_publish = fields.Boolean(dump_only=True)
+    author = fields.Nested(UserSchema, attribute='user', dump_only=True, only=['id', 'username'])
 
     created_at = fields.DateTime(dump_only=True)
     updated_at = fields.DateTime(dump_only=True)
