@@ -1,14 +1,19 @@
 from flask_restful import Resource
 from flask import request
-from models.recipe import User
+from webargs import fields
+
+from models.recipe import User, Recipe
+from schemas.recipe import RecipeSchema
 from schemas.user import UserSchema
 from http import HTTPStatus
 from flask_jwt_extended import get_jwt_identity, jwt_required
+from webargs.flaskparser import use_kwargs
 
 user_schema = UserSchema()
+recipe_list_schema = RecipeSchema(many=True)
 
 
-class UserListRecipe(Resource):
+class UserListResource(Resource):
     """
     This class implements the User Resource
     """
@@ -87,3 +92,37 @@ class MeResource(Resource):
             'email': user.email
         }
         return data, HTTPStatus.OK
+
+
+class UserRecipeListResource(Resource):
+    """
+    This resource represents the recipes of the user
+    """
+
+    @jwt_required()
+    @use_kwargs({'visibility': fields.Str(missing='public')})
+    def get(self, username, visibility):
+        """
+        This method will return recipes of a user depending on visibility
+        :param username: author of the recipes
+        :param visibility: public|private|all
+        :return:
+        """
+        user = User.get_by_username(username)
+
+        #todo: need to fix the visibility for webargs parser
+
+        visibility = request.args.get('visibility')
+
+        if user is None:
+            return {'message', 'User not found'}, HTTPStatus.NOT_FOUND
+
+        current_user = get_jwt_identity()
+
+        if current_user == user.id and visibility in ['all', 'private', 'deleted']:
+            pass
+        elif current_user != user.id and visibility in ['all', 'private', 'deleted']:
+            return {'message': 'Access denied'}, HTTPStatus.FORBIDDEN
+        recipes = Recipe.get_all_by_user(user_id=user.id, visibility=visibility)
+        return recipe_list_schema.dump(recipes)['data'], HTTPStatus.OK
+

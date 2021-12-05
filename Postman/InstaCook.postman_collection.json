@@ -1233,6 +1233,135 @@
 		{
 			"name": "Un Authenticated User Recipe Management",
 			"item": []
+		},
+		{
+			"name": "UserRecipes",
+			"item": [
+				{
+					"name": "Get all recipes owner",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{valid_access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/users/qtpython/recipes?visibility=all",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"qtpython",
+								"recipes"
+							],
+							"query": [
+								{
+									"key": "visibility",
+									"value": "all"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all deleted recipes owner",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{valid_access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/users/qtpython/recipes?visibility=deleted",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"qtpython",
+								"recipes"
+							],
+							"query": [
+								{
+									"key": "visibility",
+									"value": "deleted"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all public recipes of other author",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{user2_access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/users/qtpython/recipes?visibility=public",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"qtpython",
+								"recipes"
+							],
+							"query": [
+								{
+									"key": "visibility",
+									"value": "public"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all private recipes of other author",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{user2_access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/users/qtpython/recipes?visibility=private",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"qtpython",
+								"recipes"
+							],
+							"query": [
+								{
+									"key": "visibility",
+									"value": "private"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"event": [
