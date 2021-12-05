@@ -75,6 +75,31 @@ class Recipe(db.Model):
         """
         return cls.query.filter_by(id=recipe_id, is_deleted=False).first()
 
+    @classmethod
+    def get_all_by_user(cls, user_id, visibility='public'):
+        """
+        This method will get all the recipes by the user
+        :param user_id: id of the user
+        :param visibility:
+            all => get all published and unpublished recipes
+            public => get all published recipes
+            private => get all unpublished recipes
+            deleted => get all deleted recipes
+        :return: all the recipes
+        """
+        if visibility == 'public':
+            return cls.query.filter_by(
+                user_id=user_id, is_publish=True, is_deleted=False)
+        elif visibility == 'private':
+            return cls.query.filter_by(
+                user_id=user_id, is_publish=False, is_deleted=False)
+        elif visibility == 'all':
+            return cls.query.filter_by(user_id=user_id, is_deleted=False)
+        elif visibility == 'deleted':
+            return cls.query.filter_by(user_id=user_id, is_deleted=True)
+        else:
+            return None
+
 
 class User(db.Model):
     """
