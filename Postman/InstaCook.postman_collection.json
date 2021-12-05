@@ -273,6 +273,52 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{valid_access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/revoke",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"revoke"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify the logged out user scenario to get user info",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{valid_access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/me",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"me"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -773,6 +819,52 @@
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n    \"name\": \"Vegetable Biryani\",\r\n    \"description\": \"This is best Vegetable Biryani\",\r\n    \"num_of_servings\": 20,\r\n    \"directions\": \"This is how you make it\",\r\n    \"cook_time\": 60\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/recipes/{{recipe_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"recipes",
+								"{{recipe_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Recipe Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{valid_access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Vegetable Biryani\",\r\n    \"num_of_servings\": 20\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"

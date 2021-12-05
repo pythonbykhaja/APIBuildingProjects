@@ -1,3 +1,4 @@
+from cmath import rect
 from http import HTTPStatus
 
 from flask import request
@@ -96,6 +97,44 @@ class RecipeResource(Resource):
         recipe.description = data['description']
         recipe.save()
         return recipe.data, HTTPStatus.OK
+
+    @jwt_required()
+    def patch(self, recipe_id):
+        """
+        This method will implement the partial update of the recipe
+        The only mandatory body item will be name i.e name of the recipe
+        :return: status ok if the update is successful,
+            status BAD Request if the validation fails
+            Status un authorized if the user has no authorization
+            Status Forbidden if the user is not allowed to perform the operation
+        """
+        json_data = request.get_json()
+
+        errors = recipe_schema.validate(data=json_data, partial=('name',))
+        if errors:
+            return {'message': 'Validation Error', 'error': errors}, HTTPStatus.BAD_REQUEST
+        data = recipe_schema.load(data=json_data, partial=('name',))
+
+        # get recipe from model
+        recipe = Recipe.get_by_id(recipe_id)
+        if recipe is None:
+            return {'message': 'Recipe not found'}, HTTPStatus.NOT_FOUND
+
+        current_user = get_jwt_identity()
+        if current_user != recipe.user_id:
+            return {'message', 'Access is denied'}, HTTPStatus.FORBIDDEN
+
+        # defensive mechanism to update the items if the are present in payload
+        recipe.name = data.get('name') or recipe.name
+        recipe.directions = data.get('directions') or recipe.directions
+        recipe.num_of_servings = data.get('num_of_servings') or recipe.num_of_servings
+        recipe.cook_time = data.get('cook_time') or recipe.cook_time
+        recipe.description = data.get('description') or recipe.description
+        # saving the recipe to the model
+        recipe.save()
+
+        # serializing the schema
+        return recipe_schema.dump(recipe), HTTPStatus.OK
 
     @jwt_required()
     def delete(self, recipe_id):
