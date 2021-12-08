@@ -1,4 +1,6 @@
 from passlib.hash import pbkdf2_sha256
+from itsdangerous import URLSafeTimedSerializer
+from flask import current_app
 
 
 def hash_password(password):
@@ -18,3 +20,32 @@ def check_password(password, hashed):
     :return: True if the match False otherwise
     """
     return pbkdf2_sha256.verify(password, hashed)
+
+
+def generate_token(email, salt=None):
+    """
+    This method will generate a token
+    :param email: email
+    :param salt: sal
+    :return: token
+    """
+    serializer = URLSafeTimedSerializer(current_app.config.get['SECRET_KEY'])
+    return serializer.dump(email, salt=salt)
+
+
+def verify_token(token, max_age=(30 * 60), salt=None):
+    """
+    This method will verify the token
+    :param token:
+    :param max_age:
+    :param salt:
+    :return: Email if the verification is success else None
+    """
+    serializer = URLSafeTimedSerializer(current_app.config.get['SECRET_KEY'])
+
+    try:
+        email = serializer.loads(token, max_age=max_age, salt=salt)
+    except:
+        return None
+
+    return email
