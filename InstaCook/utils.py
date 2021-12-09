@@ -29,8 +29,8 @@ def generate_token(email, salt=None):
     :param salt: sal
     :return: token
     """
-    serializer = URLSafeTimedSerializer(current_app.config.get['SECRET_KEY'])
-    return serializer.dump(email, salt=salt)
+    serializer = URLSafeTimedSerializer(current_app.config.get('SECRET_KEY'))
+    return serializer.dumps(email, salt=salt)
 
 
 def verify_token(token, max_age=(30 * 60), salt=None):
@@ -41,7 +41,7 @@ def verify_token(token, max_age=(30 * 60), salt=None):
     :param salt:
     :return: Email if the verification is success else None
     """
-    serializer = URLSafeTimedSerializer(current_app.config.get['SECRET_KEY'])
+    serializer = URLSafeTimedSerializer(current_app.config.get('SECRET_KEY'))
 
     try:
         email = serializer.loads(token, max_age=max_age, salt=salt)

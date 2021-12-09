@@ -114,6 +114,7 @@ class User(db.Model):
     is_deleted = db.Column(db.Boolean(), default=False, server_default="False", nullable=False)
     created_at = db.Column(db.DateTime(), nullable=False, server_default=db.func.now())
     updated_at = db.Column(db.DateTime(), nullable=False, server_default=db.func.now(), onupdate=db.func.now())
+    is_active = db.Column(db.Boolean(), default=False, server_default="False", nullable=False)
 
     # relationship not a field in database
     recipes = db.relationship('Recipe', backref='user')
@@ -147,16 +148,17 @@ class User(db.Model):
         :param username: username
         :return: user model object
         """
-        return cls.query.filter_by(username=username, is_deleted=False).first()
+        return cls.query.filter_by(username=username, is_deleted=False, is_active=True).first()
 
     @classmethod
-    def get_by_email(cls, email):
+    def get_by_email(cls, email, get_only_active_user=True):
         """
         Gets the user by email id
         :param email: email id
+        :param get_only_active_user: to return only active users or all
         :return: user model Object
         """
-        return cls.query.filter_by(email=email, is_deleted=False).first()
+        return cls.query.filter_by(email=email, is_deleted=False, is_active=get_only_active_user).first()
 
     @classmethod
     def get_by_id(cls, user_id):
@@ -165,7 +167,7 @@ class User(db.Model):
         :param user_id: id of the user
         :return: User model Object
         """
-        return cls.query.filter_by(id=user_id, is_deleted=False).first()
+        return cls.query.filter_by(id=user_id, is_deleted=False, is_active=True).first()
 
     @property
     def data(self):

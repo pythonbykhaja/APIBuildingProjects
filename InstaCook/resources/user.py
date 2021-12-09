@@ -1,5 +1,5 @@
 from flask_restful import Resource
-from flask import request
+from flask import request, url_for
 from webargs import fields
 
 from models.recipe import User, Recipe
@@ -8,9 +8,15 @@ from schemas.user import UserSchema
 from http import HTTPStatus
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from webargs.flaskparser import use_kwargs
+from mailgun import MailgunApi
+from utils import generate_token, verify_token
+from config import Config
 
 user_schema = UserSchema()
 recipe_list_schema = RecipeSchema(many=True)
+# While Deploying in the servers, we need to set the environmental variable
+mailgun = MailgunApi(domain=Config.MAILGUN_DOMAIN,
+                     api_key=Config.MAILGUN_API_KEY)
 
 
 class UserListResource(Resource):
@@ -38,6 +44,22 @@ class UserListResource(Resource):
 
         user = User(**data)
         user.save()
+
+        token = generate_token(user.email, salt='activate')
+
+        subject = 'Please confirm your registration'
+
+        activation_link = url_for('useractivationresource',
+                                  token=token,
+                                  _external=True)
+        text = f"""Hi {user.username}, Thanks for registering to InstaCook.
+        Please confirm your registration by clicking on this link {activation_link}
+         """
+
+        mailgun.send_email(to=user.email,
+                           subject=subject,
+                           text=text)
+
         return user.data, HTTPStatus.CREATED
 
 
@@ -110,7 +132,7 @@ class UserRecipeListResource(Resource):
         """
         user = User.get_by_username(username)
 
-        #todo: need to fix the visibility for webargs parser
+        # todo: need to fix the visibility for webargs parser
 
         visibility = request.args.get('visibility')
 
@@ -125,4 +147,26 @@ class UserRecipeListResource(Resource):
             return {'message': 'Access denied'}, HTTPStatus.FORBIDDEN
         recipes = Recipe.get_all_by_user(user_id=user.id, visibility=visibility)
         return recipe_list_schema.dump(recipes)['data'], HTTPStatus.OK
+
+
+class UserActivationResource(Resource):
+    """
+    This resource will be used to activate the user
+    by verifying the token
+    """
+
+    def get(self, token):
+        email = verify_token(token, salt='activate')
+
+        if not email:
+            return {'message': 'Invalid token or token expired'}, HTTPStatus.BAD_REQUEST
+
+        user = User.get_by_email(email=email, get_only_active_user=False)
+
+        if not user:
+            return {'message': 'User Not Found'}, HTTPStatus.NOT_FOUND
+
+        user.is_active = True
+        user.save()
+        return {}, HTTPStatus.NO_CONTENT
 
