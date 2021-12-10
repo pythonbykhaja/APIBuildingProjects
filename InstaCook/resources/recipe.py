@@ -5,11 +5,14 @@ from flask import request
 from flask_restful import Resource
 
 from models.recipe import Recipe
-from schemas.recipe import RecipeSchema
+from schemas.recipe import RecipeSchema, RecipePaginationSchema
 from flask_jwt_extended import get_jwt_identity, jwt_required
+from webargs import fields
+from webargs.flaskparser import use_kwargs
 
 recipe_schema = RecipeSchema()
 recipe_list_schema = RecipeSchema(many=True)
+recipe_pagination_schema = RecipePaginationSchema()
 
 
 class RecipeListResource(Resource):
@@ -17,13 +20,17 @@ class RecipeListResource(Resource):
     The Resource that will be exposing the Recipe List
     """
 
-    def get(self):
+    @use_kwargs({'page': fields.Int(missing=1), 'per_page': fields.Int(missing=2)})
+    def get(self, page, per_page):
         """
         This method will indicate the get verb
         :return: all the recipes
         """
-        recipes = Recipe.get_all_published()
-        return recipe_list_schema.dump(recipes)['data'], HTTPStatus.OK
+        #todo: need to fix kwargs
+        page = int(request.args.get('page', default="1"))
+        per_page = int(request.args.get('per_page', default="2"))
+        paginated_recipes = Recipe.get_all_published(page, per_page)
+        return recipe_pagination_schema.dump(paginated_recipes), HTTPStatus.OK
 
     @jwt_required()
     def post(self):

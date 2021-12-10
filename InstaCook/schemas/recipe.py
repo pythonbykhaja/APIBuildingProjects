@@ -1,6 +1,7 @@
 from marshmallow import Schema, fields, validate,validates, ValidationError, post_dump
 
 from schemas.user import UserSchema
+from schemas.pagination import PaginationSchema
 
 
 def validate_num_of_servings(n):
@@ -48,8 +49,9 @@ class RecipeSchema(Schema):
         if value > 300:
             return ValidationError('Cook time cannot be greater than 300. ')
 
-    @post_dump(pass_many=True)
-    def wrap(self, data, many, **kwargs):
-        if many:
-            return {'data': data}
-        return data
+
+class RecipePaginationSchema(PaginationSchema):
+    """
+    This class implements the Pagination Schema and adds the data field
+    """
+    data = fields.Nested(RecipeSchema, attribute='items', many=True)
