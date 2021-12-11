@@ -351,7 +351,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/recipes?page=1&per_page=6&q=masala",
+							"raw": "{{base_url}}/recipes?page=1&per_page=6&q=masala&sort=name&order=asc",
 							"host": [
 								"{{base_url}}"
 							],
@@ -370,6 +370,14 @@
 								{
 									"key": "q",
 									"value": "masala"
+								},
+								{
+									"key": "sort",
+									"value": "name"
+								},
+								{
+									"key": "order",
+									"value": "asc"
 								}
 							]
 						}

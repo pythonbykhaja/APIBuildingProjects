@@ -22,18 +22,35 @@ class RecipeListResource(Resource):
 
     @use_kwargs({'page': fields.Int(missing=1),
                  'per_page': fields.Int(missing=2),
-                 'q': fields.Str(missing='')})
-    def get(self, page, per_page, q):
+                 'q': fields.Str(missing=''),
+                 'sort': fields.Str(missing='created_at'),
+                 'order': fields.Str(missing='desc')})
+    def get(self, page, per_page, q, sort, order):
         """
-        This method will indicate the get verb
-        :return: all the recipes
+        This method will return list of recipes
+        :param page: page number
+        :param per_page: number of recipes per page
+        :param q: query
+        :param sort: field to be sorted with
+        :param order: desc or asc order
+        :return: list of recipes
         """
+
         # todo: need to fix kwargs workaround
         page = int(request.args.get('page', default="1"))
         per_page = int(request.args.get('per_page', default="2"))
         query = request.args.get('q', default='')
+        sort = request.args.get('sort', default='created_at')
+        order = request.args.get('order', default='desc')
+
+        if sort not in ['created_at', 'cook_time', 'num_servings', 'name']:
+            sort = 'created_at'
+
+        if order not in ['asc', 'desc']:
+            order = 'desc'
+
         paginated_recipes = Recipe.get_all_published(
-            page=page, per_page=per_page, query=query
+            page=page, per_page=per_page, query=query, sort=sort, order=order
         )
         return recipe_pagination_schema.dump(paginated_recipes), HTTPStatus.OK
 
