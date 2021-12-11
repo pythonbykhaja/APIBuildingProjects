@@ -132,7 +132,7 @@ class UserRecipeListResource(Resource):
         """
         user = User.get_by_username(username)
 
-        # todo: need to fix the visibility for webargs parser
+        # todo: need to fix the visibility for web args parser
 
         visibility = request.args.get('visibility')
 
@@ -169,4 +169,3 @@ class UserActivationResource(Resource):
         user.is_active = True
         user.save()
         return {}, HTTPStatus.NO_CONTENT
-

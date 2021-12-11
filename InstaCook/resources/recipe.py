@@ -28,7 +28,7 @@ class RecipeListResource(Resource):
         This method will indicate the get verb
         :return: all the recipes
         """
-        #todo: need to fix kwargs workaround
+        # todo: need to fix kwargs workaround
         page = int(request.args.get('page', default="1"))
         per_page = int(request.args.get('per_page', default="2"))
         query = request.args.get('q', default='')

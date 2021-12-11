@@ -1,4 +1,6 @@
-from marshmallow import Schema, fields, validate,validates, ValidationError, post_dump
+from marshmallow import (
+    Schema, fields, validate, validates, ValidationError
+)
 
 from schemas.user import UserSchema
 from schemas.pagination import PaginationSchema

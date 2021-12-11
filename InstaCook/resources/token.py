@@ -71,6 +71,3 @@ class RevokeResource(Resource):
         token_black_list_item = TokenBlackList(jti=jti)
         token_black_list_item.save()
         return {'message': 'Successfully logged out'}, HTTPStatus.OK
-
-
-

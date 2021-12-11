@@ -41,7 +41,7 @@ def register_extensions(app):
     def check_if_token_in_black_list(jwt_header, jwt_payload):
         """
         This function will check for the validity of the token.
-        If the user has logged out, the token appers in blocked list
+        If the user has logged out, the token appears in blocked list
         :param jwt_header:
         :param jwt_payload:
         :return:
@@ -76,4 +76,4 @@ def register_resources(app):
 
 if __name__ == '__main__':
     flask_app = create_app()
-    flask_app.run(port='5000', host='0.0.0.0', debug=True)
+    flask_app.run(port=5000, host='0.0.0.0', debug=True)
