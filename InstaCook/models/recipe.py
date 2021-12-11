@@ -1,7 +1,6 @@
-from itertools import permutations
 
 from extensions import db
-from sqlalchemy import asc, desc
+from sqlalchemy import asc, desc, or_
 
 
 class Recipe(db.Model):
@@ -62,14 +61,19 @@ class Recipe(db.Model):
         self.save()
 
     @classmethod
-    def get_all_published(cls, page, per_page) -> list:
+    def get_all_published(cls, query, page, per_page) -> list:
         """
         This method is used to get all the published recipes
+        :param query: query for the database
         :param page: page number
         :param per_page: how many records per page
         :return: all the published recipes
         """
-        return cls.query.filter_by(is_publish=True, is_deleted=False).\
+        keyword = f'%{query}%'
+        return cls.query.filter(or_(cls.name.ilike(keyword),
+                                    cls.description.ilike(keyword)),
+                                cls.is_publish.is_(True),
+                                cls.is_deleted.is_(False)). \
             order_by(desc(cls.created_at)).paginate(page=page, per_page=per_page)
 
     @classmethod

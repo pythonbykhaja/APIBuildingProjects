@@ -20,16 +20,21 @@ class RecipeListResource(Resource):
     The Resource that will be exposing the Recipe List
     """
 
-    @use_kwargs({'page': fields.Int(missing=1), 'per_page': fields.Int(missing=2)})
-    def get(self, page, per_page):
+    @use_kwargs({'page': fields.Int(missing=1),
+                 'per_page': fields.Int(missing=2),
+                 'q': fields.Str(missing='')})
+    def get(self, page, per_page, q):
         """
         This method will indicate the get verb
         :return: all the recipes
         """
-        #todo: need to fix kwargs
+        #todo: need to fix kwargs workaround
         page = int(request.args.get('page', default="1"))
         per_page = int(request.args.get('per_page', default="2"))
-        paginated_recipes = Recipe.get_all_published(page, per_page)
+        query = request.args.get('q', default='')
+        paginated_recipes = Recipe.get_all_published(
+            page=page, per_page=per_page, query=query
+        )
         return recipe_pagination_schema.dump(paginated_recipes), HTTPStatus.OK
 
     @jwt_required()

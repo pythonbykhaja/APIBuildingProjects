@@ -351,7 +351,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/recipes?page=2&per_page=2",
+							"raw": "{{base_url}}/recipes?page=1&per_page=6&q=masala",
 							"host": [
 								"{{base_url}}"
 							],
@@ -361,11 +361,15 @@
 							"query": [
 								{
 									"key": "page",
-									"value": "2"
+									"value": "1"
 								},
 								{
 									"key": "per_page",
-									"value": "2"
+									"value": "6"
+								},
+								{
+									"key": "q",
+									"value": "masala"
 								}
 							]
 						}
@@ -463,7 +467,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Vegetable Biryani\",\r\n    \"description\": \"This is best Vegetable Biryani\",\r\n    \"num_of_servings\": 10,\r\n    \"directions\": \"follow some thing\",\r\n    \"cook_time\": 60\r\n}",
+							"raw": "{\r\n    \"name\": \"Egg Samosa Recipe\",\r\n    \"description\": \"This samosa recipe is stuffed with a masala mixture of carrots, potatoes and eggs, making it crispy on the outside and soft on the inside.\",\r\n    \"num_of_servings\": 10,\r\n    \"directions\": \"follow some thing\",\r\n    \"cook_time\": 60\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
