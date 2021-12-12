@@ -10,7 +10,7 @@ from resources.user import (
 )
 from resources.token import TokenResource, RefreshResource, RevokeResource
 from config import Config
-from extensions import db, jwt, cache
+from extensions import db, jwt, cache, limiter
 from flask_migrate import Migrate
 from models.recipe import TokenBlackList
 
@@ -37,6 +37,7 @@ def register_extensions(app):
     migrate = Migrate(app, db)
     jwt.init_app(app)
     cache.init_app(app)
+    limiter.init_app(app)
 
     @jwt.token_in_blocklist_loader
     def check_if_token_in_black_list(jwt_header, jwt_payload):

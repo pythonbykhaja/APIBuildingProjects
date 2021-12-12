@@ -9,7 +9,7 @@ from schemas.recipe import RecipeSchema, RecipePaginationSchema
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from webargs import fields
 from webargs.flaskparser import use_kwargs
-from extensions import cache
+from extensions import cache, limiter
 from utils import clear_cache
 
 recipe_schema = RecipeSchema()
@@ -21,6 +21,7 @@ class RecipeListResource(Resource):
     """
     The Resource that will be exposing the Recipe List
     """
+    decorators = [limiter.limit('2 per minute', methods=['GET'], error_message='Too Many Requests')]
 
     @use_kwargs({'page': fields.Int(missing=1),
                  'per_page': fields.Int(missing=2),
