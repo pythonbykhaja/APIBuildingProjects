@@ -10,7 +10,7 @@ from resources.user import (
 )
 from resources.token import TokenResource, RefreshResource, RevokeResource
 from config import Config
-from extensions import db, jwt
+from extensions import db, jwt, cache
 from flask_migrate import Migrate
 from models.recipe import TokenBlackList
 
@@ -36,6 +36,7 @@ def register_extensions(app):
     db.init_app(app)
     migrate = Migrate(app, db)
     jwt.init_app(app)
+    cache.init_app(app)
 
     @jwt.token_in_blocklist_loader
     def check_if_token_in_black_list(jwt_header, jwt_payload):
@@ -49,6 +50,20 @@ def register_extensions(app):
         jti = jwt_payload["jti"]
         token = TokenBlackList.get_by_jti(jti)
         return token is not None
+
+    # Note: uncomment below code to understand the keys added to cache
+    #@app.before_request
+    #def before_request():
+    #    print('\n==================== BEFORE REQUEST =====================')
+    #    print(cache.cache._cache.keys())
+    #    print('\n=========================================================')
+
+    # @app.after_request
+    # def after_request(response):
+    #     print('\n====================  AFTER REQUEST =====================')
+    #     print(cache.cache._cache.keys())
+    #     print('\n=========================================================')
+    #     return response
 
 
 def register_resources(app):

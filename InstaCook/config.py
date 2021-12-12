@@ -25,3 +25,8 @@ class Config:
     # Can change when the tokens expire
     JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(minutes=15)
     JWT_REFRESH_TOKEN_EXPIRES = datetime.timedelta(days=30)
+
+    # cache settings
+    CACHE_TYPE = 'SimpleCache'
+    # 15 minutes of timeout
+    CACHE_DEFAULT_TIMEOUT = 15 * 60

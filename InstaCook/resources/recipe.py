@@ -9,6 +9,7 @@ from schemas.recipe import RecipeSchema, RecipePaginationSchema
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from webargs import fields
 from webargs.flaskparser import use_kwargs
+from extensions import cache
 
 recipe_schema = RecipeSchema()
 recipe_list_schema = RecipeSchema(many=True)
@@ -25,6 +26,7 @@ class RecipeListResource(Resource):
                  'q': fields.Str(missing=''),
                  'sort': fields.Str(missing='created_at'),
                  'order': fields.Str(missing='desc')})
+    @cache.cached(timeout=60, query_string=True)
     def get(self, page, per_page, q, sort, order):
         """
         This method will return list of recipes
