@@ -10,6 +10,7 @@ from flask_jwt_extended import get_jwt_identity, jwt_required
 from webargs import fields
 from webargs.flaskparser import use_kwargs
 from extensions import cache
+from utils import clear_cache
 
 recipe_schema = RecipeSchema()
 recipe_list_schema = RecipeSchema(many=True)
@@ -127,6 +128,8 @@ class RecipeResource(Resource):
         recipe.cook_time = data['cook_time']
         recipe.description = data['description']
         recipe.save()
+        if recipe.is_publish:
+            clear_cache('/recipes')
         return recipe.data, HTTPStatus.OK
 
     @jwt_required()
@@ -163,6 +166,8 @@ class RecipeResource(Resource):
         recipe.description = data.get('description') or recipe.description
         # saving the recipe to the model
         recipe.save()
+        if recipe.is_publish:
+            clear_cache('/recipes')
 
         # serializing the schema
         return recipe_schema.dump(recipe), HTTPStatus.OK
@@ -184,6 +189,7 @@ class RecipeResource(Resource):
             return {'message': 'Access is not allowed'}, HTTPStatus.FORBIDDEN
 
         recipe.delete()
+        clear_cache('/recipes')
         return {}, HTTPStatus.NO_CONTENT
 
 
@@ -211,6 +217,7 @@ class RecipePublishResource(Resource):
 
         recipe.is_publish = True
         recipe.save()
+        clear_cache('/recipes')
         return {}, HTTPStatus.NO_CONTENT
 
     @jwt_required()
@@ -231,4 +238,5 @@ class RecipePublishResource(Resource):
 
         recipe.is_publish = False
         recipe.save()
+        clear_cache('/recipes')
         return {}, HTTPStatus.NO_CONTENT

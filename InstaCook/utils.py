@@ -1,6 +1,7 @@
 from passlib.hash import pbkdf2_sha256
 from itsdangerous import URLSafeTimedSerializer
 from flask import current_app
+from extensions import cache
 
 
 def hash_password(password):
@@ -49,3 +50,13 @@ def verify_token(token, max_age=(30 * 60), salt=None):
         return None
 
     return email
+
+
+def clear_cache(key_prefix):
+    """
+    Clear the cache with key_prefix
+    :param key_prefix: prefix of the key
+    :return: None
+    """
+    keys = [key for key in cache.cache._cache.keys() if key.startswith(key_prefix)]
+    cache.delete_many(*keys)
