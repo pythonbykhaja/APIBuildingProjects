@@ -10,9 +10,11 @@ from flask_jwt_extended import (
     jwt_required,
     get_jwt
 )
+from flask_apispec import marshal_with, doc, use_kwargs
+from flask_apispec.views import MethodResource
 
 
-class TokenResource(Resource):
+class TokenResource(MethodResource, Resource):
     """
     This class will implement the token resource,
     where the user is expected to login and gets the access token as response
@@ -39,7 +41,7 @@ class TokenResource(Resource):
         return {'access_token': access_token, 'refresh_token': refresh_token}, HTTPStatus.OK
 
 
-class RefreshResource(Resource):
+class RefreshResource(MethodResource, Resource):
     """
     This class implements the refreshing the access token functionality
     """
@@ -56,7 +58,7 @@ class RefreshResource(Resource):
         return {'access_token': access_token}, HTTPStatus.OK
 
 
-class RevokeResource(Resource):
+class RevokeResource(MethodResource, Resource):
     """
     This class will implement the Token Black listing
     """

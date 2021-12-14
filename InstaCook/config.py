@@ -1,5 +1,7 @@
 import os
 import datetime
+from apispec import APISpec
+from apispec.ext.marshmallow import MarshmallowPlugin
 
 
 class Config:
@@ -32,3 +34,11 @@ class Config:
     CACHE_DEFAULT_TIMEOUT = 15 * 60
 
     RATELIMIT_HEADERS_ENABLED = True
+    APISPEC_SPEC = APISpec(
+        title='Insta Cook API',
+        version="v1",
+        plugins=[MarshmallowPlugin()],
+        openapi_version='2.0.0'
+    )
+    APISPEC_SWAGGER_URL = '/swagger/'
+    APISPEC_UI_URL = '/swagger-ui/'

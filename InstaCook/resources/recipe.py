@@ -1,4 +1,3 @@
-from cmath import rect
 from http import HTTPStatus
 
 from flask import request
@@ -11,17 +10,19 @@ from webargs import fields
 from webargs.flaskparser import use_kwargs
 from extensions import cache, limiter
 from utils import clear_cache
+from flask_apispec.views import MethodResource
+from flask_apispec import marshal_with, doc, use_kwargs
 
 recipe_schema = RecipeSchema()
 recipe_list_schema = RecipeSchema(many=True)
 recipe_pagination_schema = RecipePaginationSchema()
 
 
-class RecipeListResource(Resource):
+class RecipeListResource(MethodResource, Resource):
     """
     The Resource that will be exposing the Recipe List
     """
-    decorators = [limiter.limit('2 per minute', methods=['GET'], error_message='Too Many Requests')]
+    decorators = [limiter.limit('100 per second', methods=['GET'], error_message='Too Many Requests')]
 
     @use_kwargs({'page': fields.Int(missing=1),
                  'per_page': fields.Int(missing=2),
@@ -29,6 +30,8 @@ class RecipeListResource(Resource):
                  'sort': fields.Str(missing='created_at'),
                  'order': fields.Str(missing='desc')})
     @cache.cached(timeout=60, query_string=True)
+    @doc(description='Get all the recipes', tags=['Recipe'])
+    @marshal_with(RecipePaginationSchema)
     def get(self, page, per_page, q, sort, order):
         """
         This method will return list of recipes
@@ -77,7 +80,7 @@ class RecipeListResource(Resource):
         return recipe.data, HTTPStatus.CREATED
 
 
-class RecipeResource(Resource):
+class RecipeResource(MethodResource, Resource):
     """
     This class implements the put and get specific recipe implementations
     """
@@ -194,7 +197,7 @@ class RecipeResource(Resource):
         return {}, HTTPStatus.NO_CONTENT
 
 
-class RecipePublishResource(Resource):
+class RecipePublishResource(MethodResource, Resource):
     """
     This class represents a Rest Resource to Publish and UnPublish Recipes
     """

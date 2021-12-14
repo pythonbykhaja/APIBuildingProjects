@@ -10,7 +10,7 @@ from resources.user import (
 )
 from resources.token import TokenResource, RefreshResource, RevokeResource
 from config import Config
-from extensions import db, jwt, cache, limiter
+from extensions import db, jwt, cache, limiter, docs
 from flask_migrate import Migrate
 from models.recipe import TokenBlackList
 
@@ -23,7 +23,7 @@ def create_app() -> Flask:
     app = Flask(__name__)
     app.config.from_object(Config)
     register_extensions(app)
-    register_resources(app)
+    register_resources(app, docs)
     return app
 
 
@@ -38,6 +38,8 @@ def register_extensions(app):
     jwt.init_app(app)
     cache.init_app(app)
     limiter.init_app(app)
+    docs.init_app(app)
+
 
     @jwt.token_in_blocklist_loader
     def check_if_token_in_black_list(jwt_header, jwt_payload):
@@ -71,27 +73,39 @@ def register_extensions(app):
     #     return response
 
 
-def register_resources(app):
+def register_resources(app, docs):
     """
     This method registers api resources
     :param app: flask application object
+    :param docs: Swagger documentation
     :return: Nothing
     """
     api = Api(app)
 
     api.add_resource(UserListResource, '/users')
+    docs.register(UserListResource)
     api.add_resource(UserResource, '/users/<string:username>')
+    docs.register(UserResource)
     api.add_resource(MeResource, '/me')
+    docs.register(MeResource)
     api.add_resource(UserRecipeListResource, '/users/<string:username>/recipes')
+    docs.register(UserRecipeListResource)
     api.add_resource(UserActivationResource, '/users/activate/<string:token>')
+    docs.register(UserActivationResource)
 
     api.add_resource(TokenResource, '/token')
+    docs.register(TokenResource)
     api.add_resource(RefreshResource, '/refresh')
+    docs.register(RefreshResource)
     api.add_resource(RevokeResource, '/revoke')
+    docs.register(RevokeResource)
 
     api.add_resource(RecipeListResource, '/recipes')
+    docs.register(RecipeListResource)
     api.add_resource(RecipeResource, '/recipes/<int:recipe_id>')
+    docs.register(RecipeResource)
     api.add_resource(RecipePublishResource, '/recipes/<int:recipe_id>/publish')
+    docs.register(RecipePublishResource)
 
 
 if __name__ == '__main__':

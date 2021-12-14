@@ -11,6 +11,9 @@ from webargs.flaskparser import use_kwargs
 from mailgun import MailgunApi
 from utils import generate_token, verify_token
 from config import Config
+from flask_apispec import marshal_with, doc, use_kwargs
+from flask_apispec.views import MethodResource
+
 
 user_schema = UserSchema()
 recipe_list_schema = RecipeSchema(many=True)
@@ -19,7 +22,7 @@ mailgun = MailgunApi(domain=Config.MAILGUN_DOMAIN,
                      api_key=Config.MAILGUN_API_KEY)
 
 
-class UserListResource(Resource):
+class UserListResource(MethodResource, Resource):
     """
     This class implements the User Resource
     """
@@ -63,12 +66,13 @@ class UserListResource(Resource):
         return user.data, HTTPStatus.CREATED
 
 
-class UserResource(Resource):
+class UserResource(MethodResource, Resource):
     """
     This resource will be used to get the user profile
     """
 
     @jwt_required(optional=True)
+
     def get(self, username):
         """
         This method will get the user profile information
@@ -95,7 +99,7 @@ class UserResource(Resource):
         return data, HTTPStatus.OK
 
 
-class MeResource(Resource):
+class MeResource(MethodResource, Resource):
     """
     This class will send the user information only for the logged users
     if the user is not logged 401 unauthenticated status should be sent
@@ -116,13 +120,15 @@ class MeResource(Resource):
         return data, HTTPStatus.OK
 
 
-class UserRecipeListResource(Resource):
+class UserRecipeListResource(MethodResource, Resource):
     """
     This resource represents the recipes of the user
     """
 
     @jwt_required()
     @use_kwargs({'visibility': fields.Str(missing='public')})
+    @doc(description='User recipe list', tags=['User'])
+    @marshal_with(RecipeSchema)
     def get(self, username, visibility):
         """
         This method will return recipes of a user depending on visibility
@@ -149,7 +155,7 @@ class UserRecipeListResource(Resource):
         return recipe_list_schema.dump(recipes)['data'], HTTPStatus.OK
 
 
-class UserActivationResource(Resource):
+class UserActivationResource(MethodResource, Resource):
     """
     This resource will be used to activate the user
     by verifying the token
