@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from flask_restful import Api
 from resources.recipe import RecipeListResource, RecipeResource, RecipePublishResource
 from resources.user import (
@@ -51,6 +51,10 @@ def register_extensions(app):
         jti = jwt_payload["jti"]
         token = TokenBlackList.get_by_jti(jti)
         return token is not None
+
+    @limiter.request_filter
+    def ip_whitelist():
+        return request.remote_addr == "127.0.0.1"
 
     # Note: uncomment below code to understand the keys added to cache
     #@app.before_request
