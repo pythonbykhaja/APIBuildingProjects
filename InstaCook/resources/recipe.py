@@ -14,7 +14,6 @@ from flask_apispec.views import MethodResource
 from flask_apispec import marshal_with, doc, use_kwargs
 
 recipe_schema = RecipeSchema()
-recipe_list_schema = RecipeSchema(many=True)
 recipe_pagination_schema = RecipePaginationSchema()
 
 
@@ -28,7 +27,7 @@ class RecipeListResource(MethodResource, Resource):
                  'per_page': fields.Int(missing=2),
                  'q': fields.Str(missing=''),
                  'sort': fields.Str(missing='created_at'),
-                 'order': fields.Str(missing='desc')})
+                 'order': fields.Str(missing='desc')}, location=('query'))
     @cache.cached(timeout=60, query_string=True)
     @doc(description='Get all the recipes', tags=['Recipe'])
     @marshal_with(RecipePaginationSchema)
@@ -59,9 +58,11 @@ class RecipeListResource(MethodResource, Resource):
         paginated_recipes = Recipe.get_all_published(
             page=page, per_page=per_page, query=query, sort=sort, order=order
         )
-        return recipe_pagination_schema.dump(paginated_recipes), HTTPStatus.OK
+        return paginated_recipes, HTTPStatus.OK
 
     @jwt_required()
+    @doc(description='Create a new Recipe', tags=['Recipe'])
+    @use_kwargs(RecipeSchema, location='body')
     def post(self):
         """
         This method will indicate the post verb
