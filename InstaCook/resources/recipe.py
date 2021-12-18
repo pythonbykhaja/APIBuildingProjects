@@ -27,7 +27,7 @@ class RecipeListResource(MethodResource, Resource):
                  'per_page': fields.Int(missing=2),
                  'q': fields.Str(missing=''),
                  'sort': fields.Str(missing='created_at'),
-                 'order': fields.Str(missing='desc')}, location=('query'))
+                 'order': fields.Str(missing='desc')}, location='query')
     @cache.cached(timeout=60, query_string=True)
     @doc(description='Get all the recipes', tags=['Recipe'])
     @marshal_with(RecipePaginationSchema)
@@ -87,6 +87,7 @@ class RecipeResource(MethodResource, Resource):
     """
 
     @jwt_required(optional=True)
+    @doc(description='Get the specific Recipe', tags=['Recipe'])
     def get(self, recipe_id):
         """
         This method implements the get request on the specific id
@@ -106,6 +107,7 @@ class RecipeResource(MethodResource, Resource):
         return recipe.data, HTTPStatus.OK
 
     @jwt_required()
+    @doc(description='Update the specific Recipe', tags=['Recipe'])
     def put(self, recipe_id):
         """
         This method will implement the PUT request
@@ -138,6 +140,7 @@ class RecipeResource(MethodResource, Resource):
         return recipe.data, HTTPStatus.OK
 
     @jwt_required()
+    @doc(description='Partially update the specific Recipe', tags=['Recipe'])
     def patch(self, recipe_id):
         """
         This method will implement the partial update of the recipe
@@ -178,6 +181,7 @@ class RecipeResource(MethodResource, Resource):
         return recipe_schema.dump(recipe), HTTPStatus.OK
 
     @jwt_required()
+    @doc(description='Delete the specific Recipe', tags=['Recipe'])
     def delete(self, recipe_id):
         """
         Delete implementation of the Recipe
@@ -204,6 +208,7 @@ class RecipePublishResource(MethodResource, Resource):
     """
 
     @jwt_required()
+    @doc(description='Publish the specific Recipe', tags=['Recipe'])
     def put(self, recipe_id):
         """
         This method is used to publish the Recipe
@@ -226,6 +231,7 @@ class RecipePublishResource(MethodResource, Resource):
         return {}, HTTPStatus.NO_CONTENT
 
     @jwt_required()
+    @doc(description='Delete the specific Recipe', tags=['Recipe'])
     def delete(self, recipe_id):
         """
         This method will un publish the Recipe

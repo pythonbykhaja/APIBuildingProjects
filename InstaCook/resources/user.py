@@ -27,6 +27,8 @@ class UserListResource(MethodResource, Resource):
     This class implements the User Resource
     """
 
+    @doc(description='Create the new user', tags=['User'])
+    @use_kwargs(UserSchema, location='Body')
     def post(self):
         """
         This represent the post call
@@ -72,7 +74,7 @@ class UserResource(MethodResource, Resource):
     """
 
     @jwt_required(optional=True)
-
+    @doc(description='Get User By Username', tags=['User'])
     def get(self, username):
         """
         This method will get the user profile information
@@ -106,6 +108,7 @@ class MeResource(MethodResource, Resource):
     """
 
     @jwt_required()
+    @doc(description='Get Current Userinfo', tags=['User'])
     def get(self):
         """
         Get the user information of the logged in user
@@ -161,6 +164,7 @@ class UserActivationResource(MethodResource, Resource):
     by verifying the token
     """
 
+    @doc(description='Verify the token and activate the user', tags=['User'])
     def get(self, token):
         email = verify_token(token, salt='activate')
 
