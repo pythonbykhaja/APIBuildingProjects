@@ -21,6 +21,7 @@ class TokenResource(MethodResource, Resource):
     if the user is created
     """
 
+    @doc(description='Create JWT Token', tags=['Token'])
     def post(self):
         """
         This method represents the post call with the body containing
@@ -47,6 +48,7 @@ class RefreshResource(MethodResource, Resource):
     """
 
     @jwt_required(refresh=True)
+    @doc(description='Refresh JWT Access Token', tags=['Token'], security=[{"jwt": []}])
     def post(self):
         """
         This method will get the access token and creates the new access token using
@@ -64,6 +66,7 @@ class RevokeResource(MethodResource, Resource):
     """
 
     @jwt_required()
+    @doc(description='Revoke JWT Token', tags=['Token'], security=[{"jwt": []}])
     def post(self):
         """
         This method will implement the logout functionality

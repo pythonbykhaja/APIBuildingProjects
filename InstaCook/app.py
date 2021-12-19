@@ -22,6 +22,10 @@ def create_app() -> Flask:
     """
     app = Flask(__name__)
     app.config.from_object(Config)
+    api_spec = app.config.get('APISPEC_SPEC')
+    jwt_scheme = {"type": "http", "scheme": "bearer", "bearerFormat": "JWT"}
+    api_spec.components.security_scheme("jwt", jwt_scheme)
+    app.config.update(APISPEC_SPEC=api_spec)
     register_extensions(app)
     register_resources(app, docs)
     return app
@@ -80,6 +84,7 @@ def register_resources(app, docs):
     :param docs: Swagger documentation
     :return: Nothing
     """
+
     api = Api(app)
 
     api.add_resource(UserListResource, '/users')

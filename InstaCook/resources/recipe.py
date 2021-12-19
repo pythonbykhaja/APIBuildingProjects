@@ -7,7 +7,6 @@ from models.recipe import Recipe
 from schemas.recipe import RecipeSchema, RecipePaginationSchema
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from webargs import fields
-from webargs.flaskparser import use_kwargs
 from extensions import cache, limiter
 from utils import clear_cache
 from flask_apispec.views import MethodResource
@@ -61,9 +60,14 @@ class RecipeListResource(MethodResource, Resource):
         return paginated_recipes, HTTPStatus.OK
 
     @jwt_required()
-    @doc(description='Create a new Recipe', tags=['Recipe'])
-    @use_kwargs(RecipeSchema, location='body')
-    def post(self):
+    @doc(
+        description='Create a new Recipe',
+        tags=['Recipe'],
+        security=[{"jwt": []}]
+
+    )
+    #@use_kwargs(RecipeSchema, required=True)
+    def post(self, **kwargs):
         """
         This method will indicate the post verb
         :return: recipe data
@@ -107,7 +111,7 @@ class RecipeResource(MethodResource, Resource):
         return recipe.data, HTTPStatus.OK
 
     @jwt_required()
-    @doc(description='Update the specific Recipe', tags=['Recipe'])
+    @doc(description='Update the specific Recipe', tags=['Recipe'], security=[{"jwt": []}])
     def put(self, recipe_id):
         """
         This method will implement the PUT request
@@ -140,7 +144,7 @@ class RecipeResource(MethodResource, Resource):
         return recipe.data, HTTPStatus.OK
 
     @jwt_required()
-    @doc(description='Partially update the specific Recipe', tags=['Recipe'])
+    @doc(description='Partially update the specific Recipe', tags=['Recipe'], security=[{"jwt": []}])
     def patch(self, recipe_id):
         """
         This method will implement the partial update of the recipe
@@ -181,7 +185,7 @@ class RecipeResource(MethodResource, Resource):
         return recipe_schema.dump(recipe), HTTPStatus.OK
 
     @jwt_required()
-    @doc(description='Delete the specific Recipe', tags=['Recipe'])
+    @doc(description='Delete the specific Recipe', tags=['Recipe'], security=[{"jwt": []}])
     def delete(self, recipe_id):
         """
         Delete implementation of the Recipe
@@ -208,7 +212,7 @@ class RecipePublishResource(MethodResource, Resource):
     """
 
     @jwt_required()
-    @doc(description='Publish the specific Recipe', tags=['Recipe'])
+    @doc(description='Publish the specific Recipe', tags=['Recipe'], security=[{"jwt": []}])
     def put(self, recipe_id):
         """
         This method is used to publish the Recipe
@@ -231,7 +235,7 @@ class RecipePublishResource(MethodResource, Resource):
         return {}, HTTPStatus.NO_CONTENT
 
     @jwt_required()
-    @doc(description='Delete the specific Recipe', tags=['Recipe'])
+    @doc(description='Delete the specific Recipe', tags=['Recipe'], security=[{"jwt": []}])
     def delete(self, recipe_id):
         """
         This method will un publish the Recipe

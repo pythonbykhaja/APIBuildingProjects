@@ -15,6 +15,7 @@ class Config:
     __db_name = os.getenv('DB_NAME', 'instacook')
     __mailgun_domain = os.getenv('MAILGUN_DOMAIN')
     __mailgun_api_key = os.getenv('MAILGUN_API_KEY')
+    __jwt_scheme = {"type": "http", "scheme": "bearer", "bearerFormat": "JWT"}
 
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = f'postgresql+psycopg2://{__username}:{__password}@{__host}:{__port}/{__db_name}'
@@ -34,11 +35,12 @@ class Config:
     CACHE_DEFAULT_TIMEOUT = 15 * 60
 
     RATELIMIT_HEADERS_ENABLED = True
+
     APISPEC_SPEC = APISpec(
         title='Insta Cook API',
         version="v1",
         plugins=[MarshmallowPlugin()],
-        openapi_version='2.0.0'
+        openapi_version='3.0.2'
     )
     APISPEC_SWAGGER_URL = '/swagger/'
     APISPEC_UI_URL = '/swagger-ui/'

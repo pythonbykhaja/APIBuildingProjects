@@ -108,7 +108,7 @@ class MeResource(MethodResource, Resource):
     """
 
     @jwt_required()
-    @doc(description='Get Current Userinfo', tags=['User'])
+    @doc(description='Get Current Userinfo', tags=['User'], security=[{"jwt": []}])
     def get(self):
         """
         Get the user information of the logged in user
@@ -130,7 +130,7 @@ class UserRecipeListResource(MethodResource, Resource):
 
     @jwt_required()
     @use_kwargs({'visibility': fields.Str(missing='public')})
-    @doc(description='User recipe list', tags=['User'])
+    @doc(description='User recipe list', tags=['User'], security=[{"jwt": []}])
     @marshal_with(RecipeSchema)
     def get(self, username, visibility):
         """
