@@ -11,9 +11,9 @@ class Recipe(models.Model):
 
     name = models.TextField(null=False)
     description = models.CharField(max_length=256)
-    number_of_servings = models.IntegerField()
+    num_of_servings = models.IntegerField()
     cook_time = models.IntegerField()
-    direction = models.CharField(max_length=1000)
+    directions = models.CharField(max_length=1000)
     is_publish = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
