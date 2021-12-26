@@ -1,4 +1,5 @@
-from rest_framework.generics import RetrieveUpdateAPIView, ListCreateAPIView, RetrieveAPIView
+from rest_framework.generics import RetrieveUpdateAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
+
 from api_instacook.models import Recipe
 from api_instacook.serializers import RecipeListSerializer, RecipePublishSerializer, RecipeUnPublishSerializer, \
     RecipeDetailSerializer
@@ -26,8 +27,18 @@ class RecipeUnPublishView(RetrieveUpdateAPIView):
     lookup_field = "id"
 
 
-class RecipeDetailView(RetrieveAPIView):
+class RecipeDetailView(RetrieveUpdateDestroyAPIView):
+    """
+    This view will implement GET, PUT, POST, PATCH and DELETE requests
+    on specific recipe
+    """
     queryset = Recipe.objects.all().filter(is_publish=True, is_deleted=False)
     lookup_field = "id"
     serializer_class = RecipeDetailSerializer
 
+    def perform_destroy(self, instance):
+        """
+        This method is overwritten to to perform soft delete
+        """
+        instance.is_deleted = True
+        instance.save()
