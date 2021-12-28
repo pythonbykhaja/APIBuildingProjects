@@ -1,5 +1,8 @@
 from rest_framework import serializers
 from api_instacook.models import Recipe
+from django.contrib.auth import get_user_model
+
+UserModel = get_user_model()
 
 
 class RecipeListSerializer(serializers.ModelSerializer):
@@ -80,3 +83,25 @@ class RecipeDetailSerializer(serializers.ModelSerializer):
             'directions',
             'num_of_servings'
         ]
+
+
+class UserSerializer(serializers.ModelSerializer):
+    """
+    This serializer will help in serializing user information
+    """
+    class Meta:
+        model = UserModel
+        fields = ['id', 'username', 'email', 'password']
+        read_only_fields = ('id',)
+        write_only_fields = ('password',)
+
+    def create(self, validated_data):
+        """
+        Create a new user
+        """
+        user = UserModel.objects.create_user(
+            username=validated_data['username'],
+            email=validated_data['email'],
+            password=validated_data['password']
+        )
+        return user

@@ -1,8 +1,13 @@
-from rest_framework.generics import RetrieveUpdateAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import RetrieveUpdateAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView, \
+    CreateAPIView
 
 from api_instacook.models import Recipe
 from api_instacook.serializers import RecipeListSerializer, RecipePublishSerializer, RecipeUnPublishSerializer, \
-    RecipeDetailSerializer
+    RecipeDetailSerializer, UserSerializer
+from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth import get_user_model
+
+UserModel = get_user_model()
 
 
 # Create your views here.
@@ -13,18 +18,21 @@ class RecipeListAPIView(ListCreateAPIView):
 
     queryset = Recipe.objects.all().filter(is_publish=True, is_deleted=False)
     serializer_class = RecipeListSerializer
+    permission_classes = [IsAuthenticated]
 
 
 class RecipePublishView(RetrieveUpdateAPIView):
     serializer_class = RecipePublishSerializer
     queryset = Recipe.objects.all().filter(is_publish=False, is_deleted=False)
     lookup_field = "id"
+    permission_classes = [IsAuthenticated]
 
 
 class RecipeUnPublishView(RetrieveUpdateAPIView):
     serializer_class = RecipeUnPublishSerializer
     queryset = Recipe.objects.all().filter(is_publish=True, is_deleted=False)
     lookup_field = "id"
+    permission_classes = [IsAuthenticated]
 
 
 class RecipeDetailView(RetrieveUpdateDestroyAPIView):
@@ -42,3 +50,8 @@ class RecipeDetailView(RetrieveUpdateDestroyAPIView):
         """
         instance.is_deleted = True
         instance.save()
+
+
+class UserAPIView(CreateAPIView):
+    serializer_class = UserSerializer
+    queryset = UserModel.objects.all()
