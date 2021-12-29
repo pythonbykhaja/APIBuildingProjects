@@ -26,4 +26,5 @@ urlpatterns = [
     path('users/', UserAPIView.as_view(), name='users_create'),
     path('token/', jwt_views.TokenObtainPairView.as_view(), name='create_token'),
     path('refresh/', jwt_views.TokenRefreshView.as_view(), name='refresh_token'),
+    path('revoke/', jwt_views.TokenBlacklistView.as_view(), name='revoke_token')
 ]
