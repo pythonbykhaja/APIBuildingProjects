@@ -19,6 +19,8 @@ from api_instacook.views import UserAPIView
 from rest_framework_simplejwt import views as jwt_views
 
 
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('recipes/', include('api_instacook.urls')),
