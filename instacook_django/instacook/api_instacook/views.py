@@ -1,4 +1,5 @@
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter
 from rest_framework.generics import RetrieveUpdateAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView, \
     CreateAPIView
 
@@ -7,6 +8,7 @@ from api_instacook.serializers import RecipeListSerializer, RecipePublishSeriali
     RecipeDetailSerializer, UserSerializer
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import get_user_model
+from django_filters import filters
 
 UserModel = get_user_model()
 
@@ -20,8 +22,10 @@ class RecipeListAPIView(ListCreateAPIView):
     queryset = Recipe.objects.all().filter(is_publish=True, is_deleted=False)
     serializer_class = RecipeListSerializer
     permission_classes = [IsAuthenticated]
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    search_fields = ['name', 'description']
     filterset_fields = ['name', 'description']
+    ordering_fields = ['name', 'description']
 
 
 class RecipePublishView(RetrieveUpdateAPIView):
