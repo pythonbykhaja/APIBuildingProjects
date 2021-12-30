@@ -1,3 +1,4 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.generics import RetrieveUpdateAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView, \
     CreateAPIView
 
@@ -19,6 +20,8 @@ class RecipeListAPIView(ListCreateAPIView):
     queryset = Recipe.objects.all().filter(is_publish=True, is_deleted=False)
     serializer_class = RecipeListSerializer
     permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['name', 'description']
 
 
 class RecipePublishView(RetrieveUpdateAPIView):
